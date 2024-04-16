@@ -1,4 +1,4 @@
-import { showClockNow } from "./analogclock.js";
+import { showAnalogClock } from "./analogclock.js";
 import { showDigitalClock } from "./digitalclock.js"
 
 window.addEventListener("load", (event) => {
@@ -7,7 +7,7 @@ window.addEventListener("load", (event) => {
 })
 
 function startClock() {
-    setInterval(()=>showClockNow("ca"), 100);
+    setInterval(()=>showAnalogClock("ca"), 100);
     setInterval(()=>showDigitalClock("cd"), 200);
 }
 

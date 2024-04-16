@@ -48,7 +48,7 @@ function setUpClock() {
     clockImgElem.appendChild(svgElem);
     return svgElem;
 }
-function showClockNow(clockId) {
+function showAnalogClock(clockId) {
     if (!clockImgElem) {
         clockImgElem = document.getElementById(clockId);
         setUpClock();
@@ -78,4 +78,4 @@ function showClockNow(clockId) {
     }
 }
 
-export { showClockNow };
+export { showAnalogClock };
