@@ -4,41 +4,6 @@
     background-color: #2c3b58;
     color:#6175a2;
 }
-div , span {
-    display: inline-block;
-    background-color: #333a43;
-    border-style: solid;
-    border-width: 3px;
-    border-color: #1b1b1e;
-    border-radius: 10px;
-    padding: 30px 30px 30px 30px;
-}
-.ss {
-    border-style: none;
-    background-color: transparent;
-    color: #7bff00;
-    padding: 0px;
+p {
     margin: 0px;
-    font-size: 24pt;
 }
-#digClock {
-    font-size: 50pt;
-    /* font-family:'Courier New', Courier, monospace; */
-    color: #ffff80;
-    padding: 10px;
-}
-/* button {
-    background-color: #233e7b;
-    color: #ffffff;
-    padding: 10px;
-    border-style:outset;
-    border-radius: 4px;
-    border-color: #808080;
-}
-button:hover {
-    background-color: #008080;
-}
-button:active {
-    background-color: #ff6000;
-    color: #000000;
-} */
