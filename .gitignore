@@ -1,3 +1,6 @@
+# Hidden mac files
+.DS_Store
+
 # Logs
 logs
 *.log
@@ -37,6 +40,12 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
+
+# Pre-git version archive directory
+pre-git-versions/
+
+# Zip compressed files (pre-git versions)
+*.zip
 
 # Dependency directories
 node_modules/
