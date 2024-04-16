@@ -7,20 +7,21 @@ xmlns:svg="http://www.w3.org/2000/svg">
     <link rel="stylesheet" href="./css/style.css">
     <title>Clocks</title>
 </head>
-<body onload="startClock()">
+<body>
     <h1>Local Time</h1>
     <div>
         <p id="retroClock"></p>
     </div>
     <div id="clockDiv">
+        <!-- Do we need this below or can we just let the script construct it? -->
         <svg id="clockImg" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
-            <rect x="0" y="0" width="300" height="300" fill="#e0e0ff" />
-            <circle id="circ" cx="150" cy="150" r="122" fill="#0000ff" />
-            <circle id="circ" cx="150" cy="150" r="120" fill="#ffffff" />
+            <rect x="0" y="0" width="300" height="300" fill="#1e2334" />
+            <circle id="circ" cx="150" cy="150" r="122" fill="#ffbdc3" />
+            <circle id="circ" cx="150" cy="150" r="120" fill="#a3bdc3" />
             <line id="hrHand" x1="150" y1="150" x2="150" y2="150" stroke="#000000" />
             <line id="mnHand" x1="150" y1="150" x2="150" y2="150" stroke="#000000" />
             <line id="scHand" x1="150" y1="150" x2="150" y2="150" stroke="#000000" />
-            <circle cx="150" cy="150" r="5" fill="#c0c0c0" />
+            <circle cx="150" cy="150" r="5" fill="#ffbdc3" />
         </svg>
     </div>
     <!-- <p><div id="digDiv">

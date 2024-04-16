@@ -6,6 +6,10 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const clockImgElem = document.getElementById("clockImg");    
 const retroParaElem = document.getElementById("retroClock");
 
+window.addEventListener("load", (event) => {
+    startClock();
+})
+
 function rnd2(x) {
     return Math.round(x*100)/100;
 }
@@ -48,7 +52,7 @@ function toHex2(x) {
 function randomBackgroundColor() {
     let str = "#";
     for (let i=0;i<3;i++) {
-        str += toHex2(Math.floor(Math.random()*35+220));
+        str += toHex2(Math.floor(Math.random()*35+172));
     }
     return str;
 }
@@ -56,11 +60,8 @@ function randCoords() {
     let theta = Math.PI*2*Math.random();
     let sn = Math.sin(theta);
     let cs = Math.cos(theta);
-    let len = Math.sqrt(Math.random())*CLOCKRADIUS*0.8;
-    let retx = [];
-    retx[0] = rnd2(cs*len+CLOCKCTR);
-    retx[1] = rnd2(sn*len+CLOCKCTR);
-    return retx;
+    let len = Math.sqrt(Math.random()*0.4+0.1)*CLOCKRADIUS;
+    return [rnd2(cs*len+CLOCKCTR),rnd2(sn*len+CLOCKCTR)];
 }
 function putDot() {
     let dtE = document.getElementById("dot");
@@ -77,8 +78,7 @@ function putDot() {
     clockImgElem.appendChild(dotElem);
 }
 function showClockNow() {
-    // console.log('showClockNow() invoked', (new Date()));
-    let clkDiv = document.getElementById("clockDiv");
+    // let clkDiv = document.getElementById("clockDiv");
     let crc = document.getElementById("circ");
     if (crc) {
         let nowTime = new Date();
@@ -101,29 +101,10 @@ function showClockNow() {
         secAngle *= (2*Math.PI);
         drawHand (clockImgElem, "hrHand", hourAngle, CLOCKRADIUS*0.5, CLOCKRADIUS*0.04, '#000000');
         drawHand (clockImgElem, "mnHand", minAngle, CLOCKRADIUS*0.85, CLOCKRADIUS*0.03, '#000000');
-        drawHand (clockImgElem, "scHand", secAngle, CLOCKRADIUS*0.93, CLOCKRADIUS*0.01, '#ff8080');
-        // setTimeout(showClockNow(), 3000);
+        drawHand (clockImgElem, "scHand", secAngle, CLOCKRADIUS*0.93, CLOCKRADIUS*0.01, '#ffbdc3');
     }
 }
-function twoDec(x) {
-    x = Math.round(x);
-    if (x < 10) {
-        return "0" + x;
-    } else {
-        return x.toString();
-    }
-}
-function showDigitalClock() {
-    let nowTime = new Date();
-    let hr = nowTime.getHours();
-    while (hr > 11) {
-        hr -= 12;
-    }
-    let mn = nowTime.getMinutes();
-    let ss = nowTime.getSeconds();
-    let txt = twoDec(hr)+":"+twoDec(mn)+"<span class=\"ss\">:"+twoDec(ss)+"</span>";
-    (document.getElementById("digClock")).innerHTML = txt;
-}
+
 let retroIs = false;
 let retroSvg = null;
 
@@ -132,7 +113,6 @@ function drawLedElem(lx,elemIdx,isBright) {
     let elemId = "x"+Math.floor(lx)+"d"+elemIdx;
     let elem = document.getElementById(elemId);
     let elExists = (elem != null);
-    console.log('elem=',elemId,' is?=',elExists);
     switch(elemIdx) {
         case 0:
             lns = [0,0,0,1];
@@ -173,10 +153,7 @@ function drawLedElem(lx,elemIdx,isBright) {
     elem.setAttribute("y2",lns[3]);
     elem.setAttribute("stroke",(isBright?"#e02000":"#302220"));  // TODO
     elem.setAttribute("stroke-width","5");
-    // if (!elExists) {
-        console.log('appended elem with id = ', elemId);
-        retroSvg.appendChild(elem);
-    // }
+    retroSvg.appendChild(elem);
 }
 function displayDigit(lx,d) {
     if (d < 0 || d > 9) {
@@ -191,14 +168,9 @@ function displayDigit(lx,d) {
     let eArr = [];
     let wrk = arr[d];
     for (i=6;i>=0;i--) {
-        // console.log('wrk=',wrk);
-        // console.log('wrk mod = ',wrk%2);
         eArr[i] = (wrk%2 === 1);
-        // console.log('bit=',eArr[i]);
         wrk >>>= 1;  // TODO - consider bit shift, but have to be careful: >>= or >>>= ?
-        // console.log('wrk shifted = ',wrk);
     }
-    // console.log('d=',d,' arr[d]=',arr[d],' eArr=',eArr);
     for (let j=0;j<7;j++) {
         drawLedElem(lx,j,eArr[j]);
     }
@@ -235,9 +207,7 @@ function displayTwoDigits(idx,dd,doCol) {
     }
 }
 function showRetroClock() {
-    console.log('showRetroClock invoked');
     if (!retroIs) {
-        console.log('start svg rect creation');
         retroSvg = document.createElementNS(SVG_NS,"svg");
         retroSvg.setAttribute("width","500");
         retroSvg.setAttribute("height","165");
@@ -250,9 +220,6 @@ function showRetroClock() {
         retroSvg.appendChild(rectBgElem);
         retroParaElem.appendChild(retroSvg);
         retroIs = true;
-        console.log('finish svg rect creation')
-    } else {
-        console.log('svg else');
     }
     let nowTime = new Date();
     let hh = nowTime.getHours();
@@ -269,9 +236,8 @@ function showRetroClock() {
     displayTwoDigits(2, ss, false);
 }
 function startClock() {
-    console.log('started clock');
     setInterval(showClockNow, 100);
     setInterval(putDot, 2500);
     // setInterval(showDigitalClock, 200);
-    setInterval(showRetroClock, 200);  // TODO
+    setInterval(showRetroClock, 200);
 }
