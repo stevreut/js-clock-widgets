@@ -4,6 +4,15 @@
     background-color: #2c3b58;
     color:#6175a2;
 }
-p {
+svg {
     margin: 0px;
+}
+a {
+    color:#6c8cd7;
+}
+a:hover {
+    color:#3974fc;
+}
+a:active {
+    color: #ffffff;
 }

@@ -36,10 +36,6 @@ As, for now, this is a strictly front-end implementation, all that is necessary 
 - Unpack the `js-clock-widgets-main.zip` file using the zip/unzip utility appropriate for your platform.
 
 
-## Usage
-
-*For now*, once installed as described above, simply open the included `index.html` file with your internet browser - by double-clicking, explicitly opening the file, or whatever other action might be appropriate for your platform.
-
 This `index.html` file servers as a "sampler" and example of usage, and currently shows how both the analog and digital clock widgets can be included in a page.
 
 The `index.html` file links to a `js/script.js` which, in turn, provides examples of how to embed *both* analog and digital clock widgets.  **NOTE** that the javascript makes use of *modules* and therefore will not function in your browser via the file: protocol; it is necessary to make use of the *https:* protocol instead and this will require the use of some kind of web server, even if just a light server (such as the "live server" plug-in).
@@ -53,6 +49,9 @@ If one prefers to make use of the scripts without using javascript modules then 
 * Remove `type="module"` from the `<script>` element in `index.html`.
 * It is possible some namespace collisions might result from this, but removing duplicated declarations should work. 
 
+## Usage
+
+This code has been deployed to site [stevreut.github.io/js-clock-widgets/](https://stevreut.github.io/js-clock-widgets/) where it can be viewed with a browser to see the various clock widgets in operation.
 
 # License.
 
