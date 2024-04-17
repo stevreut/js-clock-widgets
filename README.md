@@ -6,6 +6,7 @@ An evolving collection of embeddable javascript graphical clock widgets - analog
 - [Description](#description)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Design and Implementation](#design-and-implementation)
 - [License](#license)
 
 # Description
@@ -23,7 +24,7 @@ Project is created with:
 - HTML
 - SVG
 
-## Installation
+# Installation
 
 As, for now, this is a strictly front-end implementation, all that is necessary is:
 
@@ -49,9 +50,23 @@ If one prefers to make use of the scripts without using javascript modules then 
 * Remove `type="module"` from the `<script>` element in `index.html`.
 * It is possible some namespace collisions might result from this, but removing duplicated declarations should work. 
 
-## Usage
+# Usage
 
 This code has been deployed to site [stevreut.github.io/js-clock-widgets/](https://stevreut.github.io/js-clock-widgets/) where it can be viewed with a browser to see the various clock widgets in operation.
+
+# Design and Implementation
+
+All clock widgets included to-date are based on dynamic generation of SVG (Scalable Vector Graphics) content.  In the case of these implementations, the SVG content is explicitly **not** in the form of files but, rather, consists of dynamically generated content appended to the DOM via javascript.
+
+In both the case of the digital clock and analog clock, the javascript first 
+the static SVG content to the element whose id= is specified by the calling script.  After creating the static content, setInterval is then used to periodically update those dynamic SVG elements as appropriate.
+
+In the case of the analog clock, those dynamic elements would be the hands of the clock, which are SVG `<line/>` elements whose endpoint parameters are adjusted with each iteration of the adjustment.
+
+In the case of the digital clock, all of the SVG elements are non-moving but
+are dynamic in the sense that their colors may change with each iteration of the
+function which adjusts the SVG, equivalent to the physical individual LED elements in a real digital clock, each being either on or off at a given moment.  As of this moment (17 April 2024, 4:00 p.m. EDT), these LED elements are in the form of SVG `<rect/>` (rectangle) elements which are all re-rendered with each iterated update; however, in revisions expected in the next few days, these `<rect/>`
+elements will be created only once and only their colors will be altered during the iterated processing driven by calls to setInterval().
 
 # License.
 
