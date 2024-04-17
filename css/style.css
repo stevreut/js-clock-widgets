@@ -9,10 +9,16 @@ svg {
 }
 a {
     color:#6c8cd7;
+    margin: 0px;
 }
 a:hover {
     color:#3974fc;
+    margin: 0px;
 }
 a:active {
     color: #ffffff;
+    margin: 0px;
+}
+a:visited {
+    margin: 0px;
 }
