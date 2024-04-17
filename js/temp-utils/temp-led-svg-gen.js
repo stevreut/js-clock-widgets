@@ -7,12 +7,12 @@ let svgElem = null;
 let ledCount = 0;
 
 const PROPS = {
-    corner: [50,50],
-    wid: 300,
+    corner: [50,80],
+    wid: 400,
     hgt: 500,
     hlen: 200,
     vlen: 200,
-    ledwid: 10, 
+    ledwid: 30, 
     sep: 2,
     frcolr: "#ee2222",
     bgcolr: "#181111",
@@ -90,7 +90,13 @@ function makeLedElem(x1,y1,x2,y2) {
             PROPS.corner[0]+PROPS.sep+x1*PROPS.hlen+PROPS.ledwid,
             PROPS.corner[1]+y1*PROPS.vlen-PROPS.ledwid,
             PROPS.corner[0]+x2*PROPS.hlen-PROPS.ledwid-PROPS.sep,
-            PROPS.corner[1]+y1*PROPS.vlen-PROPS.ledwid  // TODO
+            PROPS.corner[1]+y1*PROPS.vlen-PROPS.ledwid,
+            PROPS.corner[0]+x2*PROPS.hlen-PROPS.sep,
+            PROPS.corner[1]+y1*PROPS.vlen,
+            PROPS.corner[0]+x2*PROPS.hlen-PROPS.ledwid-PROPS.sep,
+            PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid,
+            PROPS.corner[0]+PROPS.sep+x1*PROPS.hlen+PROPS.ledwid,
+            PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid,
         ]);
     } else {
         // vertical element
