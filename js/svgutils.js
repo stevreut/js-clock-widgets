@@ -18,23 +18,16 @@ function setDims(dimObj) {
         }
     }
 }
-function setAtts(elem, atts) {  // TODO - needs improvement - maybe regex?
+function setAtts(elem, atts) {
     for (let key in atts) {
-        if (key.includes("$")) {
-            let k2 = "";
-            const len = key.length;
-            for (let i=0;i<len;i++) {
-                let ch = key.charAt(i);
-                if (ch === "$") {
-                    k2 += "-";
-                } else {
-                    k2 += ch;
-                } 
-            }
-            elem.setAttribute(k2, atts[key]);
-        } else {
-            elem.setAttribute(key, atts[key]);
-        }
+        // Replace all '$' with '-' when determining attribute name.
+        // since attribute names can contain dashes but object
+        // properties cannot contain dashes, users of setAtts() must
+        // use a '$' instead of a '-' in property names to indicate
+        // a '-' in the resulting attribute name.  e.g. when an
+        // attribute of 'stroke-width' is desired, the property 
+        // given in the 'atts' parameter object would be 'stroke$width'.
+        elem.setAttribute(key.replaceAll(/\$/g, "-"), atts[key]);
     }
 }
 function makeSvgElem(svgParent, svgName, attribs) {
