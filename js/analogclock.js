@@ -6,9 +6,9 @@ const CLOCK_DIMS = {
     ctr: 250
 }
 
-let clockImgElem = null;   
+let clockAnchorToElem = null;   
 
-let svgElem = null;
+let clockSvgElem = null;
 
 function rnd2(x) {
     return Math.round(x*100)/100;
@@ -31,29 +31,28 @@ function drawHand (elemId, angle, len, wid, colr) {
         stroke$width: wid
     })
 }
-function setUpClock() {
+function setUpClock(clockId) {
+    if (!clockAnchorToElem) {
+        clockAnchorToElem = document.getElementById(clockId);
+    }
     setDims(CLOCK_DIMS);
-    svgElem = makeSvgElem(null, "svg", {
+    clockSvgElem = makeSvgElem(null, "svg", {
         id: "clockImg", width: CLOCK_DIMS.size, height: CLOCK_DIMS.size
     });
-    makeSvgElem(svgElem, "rect", {
+    makeSvgElem(clockSvgElem, "rect", {
         x: 0, y: 0, width: CLOCK_DIMS.size, height: CLOCK_DIMS.size, fill: "#1e2334"
     });
-    makeSvgCenteredCircle(svgElem, "circ1", CLOCK_DIMS.radius+2, "#ffbdc3");
-    makeSvgCenteredCircle(svgElem, "circ2", CLOCK_DIMS.radius, "#a3bdc3");
-    makeSvgCenteredCircle(svgElem, "circ3", 5, "#ffbdc3");
-    makeSvgLine(svgElem, "hrHand");
-    makeSvgLine(svgElem, "mnHand");
-    makeSvgLine(svgElem, "scHand");
-    clockImgElem.appendChild(svgElem);
-    return svgElem;
+    makeSvgCenteredCircle(clockSvgElem, "circ1", CLOCK_DIMS.radius+2, "#ffbdc3");
+    makeSvgCenteredCircle(clockSvgElem, "circ2", CLOCK_DIMS.radius, "#a3bdc3");
+    makeSvgCenteredCircle(clockSvgElem, "circ3", 5, "#ffbdc3");
+    makeSvgLine(clockSvgElem, "hrHand");
+    makeSvgLine(clockSvgElem, "mnHand");
+    makeSvgLine(clockSvgElem, "scHand");
+    clockAnchorToElem.appendChild(clockSvgElem);
+    return clockSvgElem;
 }
-function showAnalogClock(clockId) {
-    if (!clockImgElem) {
-        clockImgElem = document.getElementById(clockId);
-        setUpClock();
-    }
-    if (clockImgElem) {
+function updateClockTime() {
+    if (clockAnchorToElem) {
         let nowTime = new Date();
         let hr = nowTime.getHours();
         while (hr > 11) {
@@ -76,6 +75,10 @@ function showAnalogClock(clockId) {
         drawHand ("mnHand", minAngle, CLOCK_DIMS.radius*0.85, CLOCK_DIMS.radius*0.03, '#000000');
         drawHand ("scHand", secAngle, CLOCK_DIMS.radius*0.93, CLOCK_DIMS.radius*0.01, '#ffbdc3');
     }
+}
+function showAnalogClock(clockId) {
+    setUpClock(clockId);
+    setInterval(updateClockTime, 100);
 }
 
 export { showAnalogClock };

@@ -1,9 +1,8 @@
 import { makeSvgElem } from "./svgutils.js";
 
-let retroParaElem = null;
+let clockAnchorElem = null;  // Element having id= that clock is attached to
 
-let retroIs = false;
-let retroSvg = null;
+let clockSvgElem = null;     // SVG element for clock
 
 function drawLedElem(lx,elemIdx,isBright) {
     let lns = [];
@@ -42,7 +41,7 @@ function drawLedElem(lx,elemIdx,isBright) {
     } 
     lns[0]+=lx;
     lns[2]+=lx;
-    elem = makeSvgElem(retroSvg, "line", {
+    elem = makeSvgElem(clockSvgElem, "line", {
         id: elemId, x1: lns[0], y1: lns[1], x2: lns[2], y2: lns[3],
         stroke: (isBright?"#e02000":"#302220"),
         stroke$width: 5
@@ -72,7 +71,7 @@ function displayColon(lx) {
     let col1 = document.getElementById("col1");
     let col2 = document.getElementById("col2");
     if (!col1) {
-        col1 = makeSvgElem(retroSvg, "rect", {
+        col1 = makeSvgElem(clockSvgElem, "rect", {
             x: lx,
             y: 55,
             width: 5,
@@ -81,7 +80,7 @@ function displayColon(lx) {
         });
     }
     if (!col2) {
-        col2 = makeSvgElem(retroSvg,"rect", {
+        col2 = makeSvgElem(clockSvgElem,"rect", {
             x: lx,
             y: 115,
             width: 5,
@@ -99,25 +98,24 @@ function displayTwoDigits(idx,dd,doCol) {
         displayColon(idx*150+172);
     }
 }
-function showDigitalClock(clockId) {
-    if (!retroParaElem) {
-        retroParaElem = document.getElementById(clockId);
+function setUpClock(clockId) {
+    if (!clockAnchorElem) {
+        clockAnchorElem = document.getElementById(clockId);
     }
-    if (!retroIs) {
-        retroSvg = makeSvgElem(null, "svg", {
-            width: 500,
-            height: 165,
-        })
-        makeSvgElem(retroSvg, "rect", {
-            x: 0,
-            y: 0,
-            width: 500,
-            height: 165,
-            fill: "#202020"
-        });
-        retroParaElem.appendChild(retroSvg);
-        retroIs = true;
-    }
+    clockSvgElem = makeSvgElem(null, "svg", {
+        width: 500,
+        height: 165,
+    })
+    makeSvgElem(clockSvgElem, "rect", {
+        x: 0,
+        y: 0,
+        width: 500,
+        height: 165,
+        fill: "#202020"
+    });
+    clockAnchorElem.appendChild(clockSvgElem);
+}
+function showTimeOnClock() {
     let nowTime = new Date();
     let hh = nowTime.getHours();
     while (hh > 12) {
@@ -131,6 +129,11 @@ function showDigitalClock(clockId) {
     displayTwoDigits(0, hh, true);
     displayTwoDigits(1, mm, true);
     displayTwoDigits(2, ss, false);
+}
+
+function showDigitalClock(clockId) {
+    setUpClock(clockId);
+    setInterval(showTimeOnClock, 200);
 }
 
 export { showDigitalClock };
