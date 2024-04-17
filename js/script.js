@@ -12,14 +12,14 @@ function startClock() {
 }
 
 function alterHeading() {
-    let h1Elems = document.getElementsByTagName("h1");
-    if (h1Elems && h1Elems.length > 0) {
-        let firstH1 = h1Elems[0];
+    let h2Elems = document.getElementsByTagName("h2");
+    if (h2Elems && h2Elems.length > 0) {
+        let firstH2 = h2Elems[0];
         let dateStr = (new Date()).toString().trim();
         if (dateStr.endsWith(")")) {
             let idx = dateStr.lastIndexOf("(");
             let zoneStr = dateStr.substring(idx);
-            firstH1.innerText += ("  " + zoneStr);
+            firstH2.innerText += ("  " + zoneStr);
         }
     }
 }
