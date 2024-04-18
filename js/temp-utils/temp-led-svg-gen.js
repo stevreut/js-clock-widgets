@@ -16,6 +16,7 @@ const PROPS = {
     sep: 4,
     frcolr: "#ee2222",
     bgcolr: "#181111",
+    dullColr: "#552222"
 }
 
 window.addEventListener("load", (event) => {
@@ -25,7 +26,7 @@ window.addEventListener("load", (event) => {
 
 });
 
-function makeSvgPoly(points) {
+function makeSvgPoly(points, isBright) {
     ledCount++;
     let ptStr = "";
     if (points.length < 6) {
@@ -45,7 +46,7 @@ function makeSvgPoly(points) {
     makeSvgElem(svgElem,"polygon",{
         id: "p"+ledCount,
         points: ptStr,
-        fill: PROPS.frcolr
+        fill: (isBright?PROPS.frcolr:PROPS.dullColr)
     });
 }
 
@@ -77,6 +78,7 @@ function createSvgDigitImg() {
 function makeLedElem(x1,y1,x2,y2) {
     // Creates a single LED digit element in SVG as an
     // SVG <polygon>
+    let isBright = (Math.random()<0.7);
     console.log("points ("+x1+","+y1+") -> ("+x2+","+y2+")");
     if (x1===x2 && y1===y2) {
         console.log("zero len");
@@ -106,7 +108,7 @@ function makeLedElem(x1,y1,x2,y2) {
         addIncrPair(ptArr,-PROPS.ledwid,-PROPS.ledwid);
     }
     ptArr = biasPoints(ptArr);
-    makeSvgPoly(ptArr);
+    makeSvgPoly(ptArr, isBright);
 }
 
 function addIncrPair(arr, xinc, yinc) {
