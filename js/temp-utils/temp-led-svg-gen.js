@@ -7,13 +7,13 @@ let svgElem = null;
 let ledCount = -1;
 
 const PROPS = {
-    corner: [30,30],
-    wid: 140,
-    hgt: 220,
-    hlen: 80,
-    vlen: 80,
-    ledwid: 10, 
-    sep: 2,
+    corner: [60,60],
+    wid: 280,
+    hgt: 440,
+    hlen: 160,
+    vlen: 160,
+    ledwid: 20, 
+    sep: 4,
     frcolr: "#ee2222",
     bgcolr: "#181111",
 }
@@ -22,6 +22,7 @@ window.addEventListener("load", (event) => {
     // Upon loading the page ...
     svgAnchElem = document.getElementById("pid");
     createSvgDigitImg();
+
 });
 
 function makeSvgPoly(points) {
@@ -85,37 +86,47 @@ function makeLedElem(x1,y1,x2,y2) {
         console.log("diagonal");
         return;
     }
+    let ptArr = [];
     if (y1===y2) {
         // horizontal element
-        makeSvgPoly([
-            PROPS.corner[0]+x1*PROPS.hlen+PROPS.ledwid+PROPS.sep,
-            PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid,
-            PROPS.corner[0]+x1*PROPS.hlen+PROPS.sep,
-            PROPS.corner[1]+y1*PROPS.vlen,
-            PROPS.corner[0]+x1*PROPS.hlen+PROPS.ledwid+PROPS.sep,
-            PROPS.corner[1]+y1*PROPS.vlen-PROPS.ledwid,
-            PROPS.corner[0]+x2*PROPS.hlen-PROPS.ledwid-PROPS.sep,
-            PROPS.corner[1]+y2*PROPS.vlen-PROPS.ledwid,
-            PROPS.corner[0]+x2*PROPS.hlen-PROPS.sep,
-            PROPS.corner[1]+y2*PROPS.vlen,
-            PROPS.corner[0]+x2*PROPS.hlen-PROPS.ledwid-PROPS.sep,
-            PROPS.corner[1]+y2*PROPS.vlen+PROPS.ledwid,
-        ]);
+        ptArr.push(PROPS.corner[0]+x1*PROPS.hlen+PROPS.ledwid+PROPS.sep);
+        ptArr.push(PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid);
+        addIncrPair(ptArr,-PROPS.ledwid,-PROPS.ledwid);
+        addIncrPair(ptArr,PROPS.ledwid,-PROPS.ledwid);
+        addIncrPair(ptArr,(x2-x1)*PROPS.hlen-2*(PROPS.ledwid+PROPS.sep),0);
+        addIncrPair(ptArr,PROPS.ledwid,PROPS.ledwid);
+        addIncrPair(ptArr,-PROPS.ledwid,PROPS.ledwid);
     } else {
-        // vertical element
-        makeSvgPoly([
-            PROPS.corner[0]+x1*PROPS.hlen-PROPS.ledwid,
-            PROPS.corner[1]+y1*PROPS.vlen+PROPS.sep+PROPS.ledwid,
-            PROPS.corner[0]+x1*PROPS.hlen,
-            PROPS.corner[1]+y1*PROPS.vlen+PROPS.sep,
-            PROPS.corner[0]+x1*PROPS.hlen+PROPS.ledwid,
-            PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid+PROPS.sep,
-            PROPS.corner[0]+x2*PROPS.hlen+PROPS.ledwid,
-            PROPS.corner[1]+y2*PROPS.vlen-PROPS.ledwid-PROPS.sep,
-            PROPS.corner[0]+x2*PROPS.hlen,
-            PROPS.corner[1]+y2*PROPS.vlen-PROPS.sep,
-            PROPS.corner[0]+x2*PROPS.hlen-PROPS.ledwid,
-            PROPS.corner[1]+y2*PROPS.vlen-PROPS.ledwid-PROPS.sep
-        ]);
+        ptArr.push(PROPS.corner[0]+x1*PROPS.hlen-PROPS.ledwid);
+        ptArr.push(PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid+PROPS.sep);
+        addIncrPair(ptArr,PROPS.ledwid,-PROPS.ledwid);
+        addIncrPair(ptArr,PROPS.ledwid,PROPS.ledwid);
+        addIncrPair(ptArr,0,(y2-y1)*PROPS.vlen-2*(PROPS.ledwid+PROPS.sep));
+        addIncrPair(ptArr,-PROPS.ledwid,PROPS.ledwid);
+        addIncrPair(ptArr,-PROPS.ledwid,-PROPS.ledwid);
     }
+    ptArr = biasPoints(ptArr);
+    makeSvgPoly(ptArr);
+}
+
+function addIncrPair(arr, xinc, yinc) {
+    // Append delta to end of polygon point array
+    // based on previous coordinates as moved by
+    // parameters above.
+    let newx = arr[arr.length-2]+xinc;
+    let newy = arr[arr.length-1]+yinc;
+    arr.push(newx);
+    arr.push(newy);
+}
+
+function biasPoints(arr) {
+    let newArr = []
+    for (let i=0;i<arr.length;i+=2) {
+        let x = arr[i];
+        let y = arr[i+1];
+        x += PROPS.vlen*0.2-y*0.15;
+        newArr.push(x);
+        newArr.push(y);
+    }
+    return newArr;
 }
