@@ -85,18 +85,18 @@ function makeLedElem(x1,y1,x2,y2) {
     if (y1===y2) {
         // horizontal element
         makeSvgPoly([
-            PROPS.corner[0]+PROPS.sep+x1*PROPS.hlen,
+            PROPS.corner[0]+x1*PROPS.hlen+PROPS.ledwid+PROPS.sep,
+            PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid,
+            PROPS.corner[0]+x1*PROPS.hlen+PROPS.sep,
             PROPS.corner[1]+y1*PROPS.vlen,
-            PROPS.corner[0]+PROPS.sep+x1*PROPS.hlen+PROPS.ledwid,
+            PROPS.corner[0]+x1*PROPS.hlen+PROPS.ledwid+PROPS.sep,
             PROPS.corner[1]+y1*PROPS.vlen-PROPS.ledwid,
             PROPS.corner[0]+x2*PROPS.hlen-PROPS.ledwid-PROPS.sep,
-            PROPS.corner[1]+y1*PROPS.vlen-PROPS.ledwid,
+            PROPS.corner[1]+y2*PROPS.vlen-PROPS.ledwid,
             PROPS.corner[0]+x2*PROPS.hlen-PROPS.sep,
-            PROPS.corner[1]+y1*PROPS.vlen,
+            PROPS.corner[1]+y2*PROPS.vlen,
             PROPS.corner[0]+x2*PROPS.hlen-PROPS.ledwid-PROPS.sep,
-            PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid,
-            PROPS.corner[0]+PROPS.sep+x1*PROPS.hlen+PROPS.ledwid,
-            PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid,
+            PROPS.corner[1]+y2*PROPS.vlen+PROPS.ledwid,
         ]);
     } else {
         // vertical element
