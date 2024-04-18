@@ -6,6 +6,17 @@ let svgElem = null;
 
 let ledCount = -1;
 
+let digitValue = -1;
+
+const numbin = "1110111;0000011;0111110;0011111;" +
+            "1001011;1011101;1111101;0010011;" +
+            "1111111;1011111";
+const numBinArr = numbin.split(";");
+console.log("arr size = ", numBinArr.length);
+for (let j=0;j<numBinArr.length;j++) {
+    console.log('bin for ', j, ' = "', numBinArr[j], '"');
+}
+
 const PROPS = {
     corner: [60,60],
     wid: 280,
@@ -16,14 +27,14 @@ const PROPS = {
     sep: 4,
     frcolr: "#ee2222",
     bgcolr: "#181111",
-    dullColr: "#552222"
+    dullColr: "#331111"
 }
 
 window.addEventListener("load", (event) => {
     // Upon loading the page ...
     svgAnchElem = document.getElementById("pid");
     createSvgDigitImg();
-
+    walkThruDigitValues();
 });
 
 function makeSvgPoly(points, isBright) {
@@ -65,60 +76,64 @@ function createSvgDigitImg() {
         fill: PROPS.bgcolr
     })
     // Make the seven LED elements of a digit
-    makeLedElem(0,0,1,0);  // (0,0) -> (1,0)
-    makeLedElem(0,1,1,1);  // (0,1) -> (1,1), etc.
-    makeLedElem(0,2,1,2);
-    makeLedElem(0,0,0,1);
-    makeLedElem(0,1,0,2);
-    makeLedElem(1,0,1,1);
-    makeLedElem(1,1,1,2);
+    const conf = "00V01V00H01H02H10V11V";
+    for (let i=0;i<21;i+=3) {
+        makeLedElem(
+            parseInt(conf.charAt(i)),
+            parseInt(conf.charAt(i+1)),
+            (conf.charAt(i+2)==="H")
+        )
+    }
     svgAnchElem.appendChild(svgElem);
 }
 
-function makeLedElem(x1,y1,x2,y2) {
+function makeLedElem(x1,y1,isHorizontal) {
     // Creates a single LED digit element in SVG as an
     // SVG <polygon>
-    let isBright = (Math.random()<0.7);
-    console.log("points ("+x1+","+y1+") -> ("+x2+","+y2+")");
-    if (x1===x2 && y1===y2) {
-        console.log("zero len");
-        return;
-    }
-    if (x1!==x2 && y2!==y2) {
-        console.log("diagonal");
-        return;
-    }
     let ptArr = [];
-    if (y1===y2) {
+    let x2 = null;
+    let y2 = null;
+    let inc1 = PROPS.ledwid;
+    let inc2 = 2*(PROPS.ledwid+PROPS.sep);
+    if (isHorizontal) {
+        x2 = x1+1;
+        y2 = y1;
         // horizontal element
-        ptArr.push(PROPS.corner[0]+x1*PROPS.hlen+PROPS.ledwid+PROPS.sep);
-        ptArr.push(PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid);
-        addIncrPair(ptArr,-PROPS.ledwid,-PROPS.ledwid);
-        addIncrPair(ptArr,PROPS.ledwid,-PROPS.ledwid);
-        addIncrPair(ptArr,(x2-x1)*PROPS.hlen-2*(PROPS.ledwid+PROPS.sep),0);
-        addIncrPair(ptArr,PROPS.ledwid,PROPS.ledwid);
-        addIncrPair(ptArr,-PROPS.ledwid,PROPS.ledwid);
+        addIncrPair(ptArr,PROPS.corner[0]+x1*PROPS.hlen+inc1+PROPS.sep,
+            PROPS.corner[1]+y1*PROPS.vlen+inc1);
+        addIncrPair(ptArr,-inc1,-inc1);
+        addIncrPair(ptArr,inc1,-inc1);
+        addIncrPair(ptArr,(x2-x1)*PROPS.hlen-inc2,0);
+        addIncrPair(ptArr,inc1,inc1);
+        addIncrPair(ptArr,-inc1,inc1);
     } else {
-        ptArr.push(PROPS.corner[0]+x1*PROPS.hlen-PROPS.ledwid);
-        ptArr.push(PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid+PROPS.sep);
-        addIncrPair(ptArr,PROPS.ledwid,-PROPS.ledwid);
-        addIncrPair(ptArr,PROPS.ledwid,PROPS.ledwid);
-        addIncrPair(ptArr,0,(y2-y1)*PROPS.vlen-2*(PROPS.ledwid+PROPS.sep));
-        addIncrPair(ptArr,-PROPS.ledwid,PROPS.ledwid);
-        addIncrPair(ptArr,-PROPS.ledwid,-PROPS.ledwid);
+        // vertical element
+        x2 = x1;
+        y2 = y1+1;
+        addIncrPair(ptArr,PROPS.corner[0]+x1*PROPS.hlen-inc1,
+            PROPS.corner[1]+y1*PROPS.vlen+inc1+PROPS.sep);
+        addIncrPair(ptArr,inc1,-inc1);
+        addIncrPair(ptArr,inc1,inc1);
+        addIncrPair(ptArr,0,(y2-y1)*PROPS.vlen-inc2);
+        addIncrPair(ptArr,-inc1,inc1);
+        addIncrPair(ptArr,-inc1,-inc1);
     }
     ptArr = biasPoints(ptArr);
-    makeSvgPoly(ptArr, isBright);
+    makeSvgPoly(ptArr, false);
 }
 
 function addIncrPair(arr, xinc, yinc) {
     // Append delta to end of polygon point array
     // based on previous coordinates as moved by
     // parameters above.
-    let newx = arr[arr.length-2]+xinc;
-    let newy = arr[arr.length-1]+yinc;
-    arr.push(newx);
-    arr.push(newy);
+    if (arr.length < 2) {
+        arr.push(xinc, yinc);
+    } else {
+        let newx = arr[arr.length-2]+xinc;
+        let newy = arr[arr.length-1]+yinc;
+        arr.push(newx);
+        arr.push(newy);
+    }
 }
 
 function biasPoints(arr) {
@@ -131,4 +146,26 @@ function biasPoints(arr) {
         newArr.push(y);
     }
     return newArr;
+}
+
+function walkThruDigitValues() {
+    setInterval(displayDigitValue,700);
+}
+
+function displayDigitValue() {
+    digitValue++;
+    if (digitValue>9) {
+        digitValue = 0;
+    }
+    let template = numBinArr[digitValue];
+    console.log('template = ', template);
+    for (let i=0;i<7;i++) {
+        let elemId = "p" + i;
+        let elem = document.getElementById(elemId);
+        if (elem) { 
+            elem.setAttribute("fill",(template.charAt(i)==="1"?PROPS.frcolr:PROPS.dullColr));
+        } else {
+            console.log("element " + elemId + " not found");
+        }
+    }
 }
