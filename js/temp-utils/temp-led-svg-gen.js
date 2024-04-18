@@ -7,12 +7,12 @@ let svgElem = null;
 let ledCount = -1;
 
 const PROPS = {
-    corner: [75,75],
-    wid: 350,
-    hgt: 550,
-    hlen: 200,
-    vlen: 200,
-    ledwid: 25, 
+    corner: [30,30],
+    wid: 140,
+    hgt: 220,
+    hlen: 80,
+    vlen: 80,
+    ledwid: 10, 
     sep: 2,
     frcolr: "#ee2222",
     bgcolr: "#181111",
@@ -49,6 +49,7 @@ function makeSvgPoly(points) {
 }
 
 function createSvgDigitImg() {
+    // Creates SVG for image of a digital LED digit
     svgElem = makeSvgElem(null, "svg", {
         width: PROPS.wid,
         height: PROPS.hgt,
@@ -61,9 +62,9 @@ function createSvgDigitImg() {
         height: PROPS.hgt,
         fill: PROPS.bgcolr
     })
-    // makeSvgPoly([3,3,20,3,3,20]);
-    makeLedElem(0,0,1,0);
-    makeLedElem(0,1,1,1);
+    // Make the seven LED elements of a digit
+    makeLedElem(0,0,1,0);  // (0,0) -> (1,0)
+    makeLedElem(0,1,1,1);  // (0,1) -> (1,1), etc.
     makeLedElem(0,2,1,2);
     makeLedElem(0,0,0,1);
     makeLedElem(0,1,0,2);
@@ -73,6 +74,8 @@ function createSvgDigitImg() {
 }
 
 function makeLedElem(x1,y1,x2,y2) {
+    // Creates a single LED digit element in SVG as an
+    // SVG <polygon>
     console.log("points ("+x1+","+y1+") -> ("+x2+","+y2+")");
     if (x1===x2 && y1===y2) {
         console.log("zero len");
@@ -101,18 +104,18 @@ function makeLedElem(x1,y1,x2,y2) {
     } else {
         // vertical element
         makeSvgPoly([
-            PROPS.corner[0]+PROPS.hlen*x1,
-            PROPS.corner[1]+PROPS.vlen*y1+PROPS.sep,
-            PROPS.corner[0]+PROPS.hlen*x1+PROPS.ledwid,
-            PROPS.corner[1]+PROPS.vlen*y1+PROPS.sep+PROPS.ledwid,
-            PROPS.corner[0]+PROPS.hlen*x1+PROPS.ledwid,
-            PROPS.corner[1]+PROPS.vlen*y2-PROPS.sep-PROPS.ledwid,
-            PROPS.corner[0]+PROPS.hlen*x1,
-            PROPS.corner[1]+PROPS.vlen*y2-PROPS.sep,
-            PROPS.corner[0]+PROPS.hlen*x1-PROPS.ledwid,
-            PROPS.corner[1]+PROPS.vlen*y2-PROPS.sep-PROPS.ledwid,
-            PROPS.corner[0]+PROPS.hlen*x1-PROPS.ledwid,
-            PROPS.corner[1]+PROPS.vlen*y1+PROPS.sep+PROPS.ledwid,
+            PROPS.corner[0]+x1*PROPS.hlen-PROPS.ledwid,
+            PROPS.corner[1]+y1*PROPS.vlen+PROPS.sep+PROPS.ledwid,
+            PROPS.corner[0]+x1*PROPS.hlen,
+            PROPS.corner[1]+y1*PROPS.vlen+PROPS.sep,
+            PROPS.corner[0]+x1*PROPS.hlen+PROPS.ledwid,
+            PROPS.corner[1]+y1*PROPS.vlen+PROPS.ledwid+PROPS.sep,
+            PROPS.corner[0]+x2*PROPS.hlen+PROPS.ledwid,
+            PROPS.corner[1]+y2*PROPS.vlen-PROPS.ledwid-PROPS.sep,
+            PROPS.corner[0]+x2*PROPS.hlen,
+            PROPS.corner[1]+y2*PROPS.vlen-PROPS.sep,
+            PROPS.corner[0]+x2*PROPS.hlen-PROPS.ledwid,
+            PROPS.corner[1]+y2*PROPS.vlen-PROPS.ledwid-PROPS.sep
         ]);
     }
 }
