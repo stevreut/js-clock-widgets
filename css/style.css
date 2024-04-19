@@ -1,14 +1,20 @@
+:root {
+    --emph-color: #8ca7e6;
+}
 * {
     margin: 15px;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     background-color: #2c3b58;
     color:#6175a2;
 }
+h2 {
+    margin-top: 80px;
+}
 svg {
     margin: 0px;
 }
 a {
-    color:#6c8cd7;
+    color: var(--emph-color);
     margin: 0px;
 }
 a:hover {
@@ -21,4 +27,9 @@ a:active {
 }
 a:visited {
     margin: 0px;
+}
+#upd {
+    color: var(--emph-color);
+    font-family: 'Courier New', Courier, monospace;
+    font-style: normal;
 }

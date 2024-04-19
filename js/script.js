@@ -3,15 +3,39 @@ import { showDigitalClock } from "./digitalclock.js"
 
 window.addEventListener("load", (event) => {
     // Upon loading the page ...
-    startClock();
+    updateDate();
     alterHeading();
-})
 
-function startClock() {
+    //**************
+    startClocks();
+    //**************
+
+});
+
+function startClocks() {
     // Attach an analog clock to the element having id="ca".
     showAnalogClock("ca");
     // Attach a digital clock to the element having id="cd".
     showDigitalClock("cd");
+}
+
+function updateDate() {
+    const updElem = document.getElementById("upd");
+    if (updElem) {
+        const pageDateStr = updElem.innerText;
+        console.log('retrieved date = "' + pageDateStr + '"');
+        const pageDate = new Date(pageDateStr);
+        console.log('as date = "', pageDate, '"');
+        if (pageDate) {
+            let localDateStr = pageDate.toLocaleString();
+            if (localDateStr) {
+                localDateStr = localDateStr.trim();
+                if (localDateStr && localDateStr.length > 0) {
+                    updElem.innerText = localDateStr;
+                }
+            }
+        }
+    }
 }
 
 function alterHeading() {
