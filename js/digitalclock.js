@@ -37,15 +37,17 @@ function drawLedElem(lx,elemIdx,isBright) {
     }
     lns = lns.map((val)=>val*50+30);
     if (elExists) {
-        elem.remove();
-    } 
-    lns[0]+=lx;
-    lns[2]+=lx;
-    elem = makeSvgElem(clockSvgElem, "line", {
-        id: elemId, x1: lns[0], y1: lns[1], x2: lns[2], y2: lns[3],
-        stroke: (isBright?"#e02000":"#302220"),
-        stroke$width: 5
-    })
+        elem.setAttribute("stroke", (isBright?"#e02000":"#302220"));
+        console.log('updated LED elem: ', JSON.stringify(elem));
+    } else {
+        lns[0]+=lx;
+        lns[2]+=lx;
+        elem = makeSvgElem(clockSvgElem, "line", {
+            id: elemId, x1: lns[0], y1: lns[1], x2: lns[2], y2: lns[3],
+            stroke: (isBright?"#e02000":"#302220"),
+            stroke$width: 5
+        });
+    }
 }
 function displayDigit(lx,d) {
     if (d < 0 || d > 9) {
