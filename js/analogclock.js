@@ -37,14 +37,14 @@ function setUpClock(clockId) {
     }
     setDims(CLOCK_DIMS);
     clockSvgElem = makeSvgElem(null, "svg", {
-        id: "clockImg", width: CLOCK_DIMS.size, height: CLOCK_DIMS.size
+        width: CLOCK_DIMS.size, height: CLOCK_DIMS.size
     });
     makeSvgElem(clockSvgElem, "rect", {
         x: 0, y: 0, width: CLOCK_DIMS.size, height: CLOCK_DIMS.size, fill: "#1e2334"
     });
-    makeSvgCenteredCircle(clockSvgElem, "circ1", CLOCK_DIMS.radius+2, "#ffbdc3");
-    makeSvgCenteredCircle(clockSvgElem, "circ2", CLOCK_DIMS.radius, "#a3bdc3");
-    makeSvgCenteredCircle(clockSvgElem, "circ3", 5, "#ffbdc3");
+    makeSvgCenteredCircle(clockSvgElem, null, CLOCK_DIMS.radius+2, "#ffbdc3");
+    makeSvgCenteredCircle(clockSvgElem, null, CLOCK_DIMS.radius, "#a3bdc3");
+    makeSvgCenteredCircle(clockSvgElem, null, 5, "#ffbdc3");
     makeSvgLine(clockSvgElem, "hrHand");
     makeSvgLine(clockSvgElem, "mnHand");
     makeSvgLine(clockSvgElem, "scHand");

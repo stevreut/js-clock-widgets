@@ -44,9 +44,13 @@ function makeSvgLine(svgParent, id) {
     });
 }
 function makeSvgCenteredCircle(svgParent, id, radius, colr) {
-    return makeSvgElem(svgParent, "circle", {
-        id: id, cx: CLOCK_DIMS.ctr, cy: CLOCK_DIMS.ctr, r: radius, fill: colr
-    });
+    let attribsObj = {
+        cx: CLOCK_DIMS.ctr, cy: CLOCK_DIMS.ctr, r: radius, fill: colr
+    }
+    if (id) {
+        attribsObj.id = id;
+    }
+    return makeSvgElem(svgParent, "circle", attribsObj);
 }
 
 export { makeSvgCenteredCircle, makeSvgElem, makeSvgLine, setAtts, setDims }
