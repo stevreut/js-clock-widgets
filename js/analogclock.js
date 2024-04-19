@@ -13,7 +13,7 @@ let clockSvgElem = null;
 function rnd2(x) {
     return Math.round(x*100)/100;
 }
-function drawHand (elemId, angle, len, wid, colr) {
+function drawClockHand (elemId, angle, len, wid, colr) {
     let elem = document.getElementById(elemId);
     if (!elem) {
         console.log('no element found for ', elemId);
@@ -71,9 +71,9 @@ function updateClockTime() {
         let secAngle = totMils/(60*1000);
         secAngle = secAngle-Math.floor(secAngle);
         secAngle *= (2*Math.PI);
-        drawHand ("hrHand", hourAngle, CLOCK_DIMS.radius*0.5, CLOCK_DIMS.radius*0.04, '#000000');
-        drawHand ("mnHand", minAngle, CLOCK_DIMS.radius*0.85, CLOCK_DIMS.radius*0.03, '#000000');
-        drawHand ("scHand", secAngle, CLOCK_DIMS.radius*0.93, CLOCK_DIMS.radius*0.01, '#ffbdc3');
+        drawClockHand ("hrHand", hourAngle, CLOCK_DIMS.radius*0.5, CLOCK_DIMS.radius*0.04, '#000000');
+        drawClockHand ("mnHand", minAngle, CLOCK_DIMS.radius*0.85, CLOCK_DIMS.radius*0.03, '#000000');
+        drawClockHand ("scHand", secAngle, CLOCK_DIMS.radius*0.93, CLOCK_DIMS.radius*0.01, '#ffbdc3');
     }
 }
 function showAnalogClock(clockId) {
