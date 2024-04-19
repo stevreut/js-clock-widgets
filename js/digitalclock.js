@@ -89,14 +89,11 @@ function displayColon(lx) {
         })
     }
 }
-function displayTwoDigits(idx,dd,doCol) {
+function displayTwoDigits(idx,dd) {
     let d2 = dd%10;
     let d1 = Math.floor(dd/10);
     displayDigit(idx*157+5,d1);
     displayDigit(idx*157+76,d2);
-    if (doCol) {
-        displayColon(idx*150+172);
-    }
 }
 function setUpClock(clockId) {
     if (!clockAnchorElem) {
@@ -113,6 +110,8 @@ function setUpClock(clockId) {
         height: 165,
         fill: "#202020"
     });
+    displayColon(172);
+    displayColon(155+172);
     clockAnchorElem.appendChild(clockSvgElem);
 }
 function showTimeOnClock() {
@@ -126,9 +125,9 @@ function showTimeOnClock() {
     }
     let mm = nowTime.getMinutes();
     let ss = nowTime.getSeconds();
-    displayTwoDigits(0, hh, true);
-    displayTwoDigits(1, mm, true);
-    displayTwoDigits(2, ss, false);
+    displayTwoDigits(0, hh);
+    displayTwoDigits(1, mm);
+    displayTwoDigits(2, ss);
 }
 
 function showDigitalClock(clockId) {
