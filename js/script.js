@@ -23,17 +23,26 @@ function updateDate() {
     const updElem = document.getElementById("upd");
     if (updElem) {
         const pageDateStr = updElem.innerText;
-        console.log('retrieved date = "' + pageDateStr + '"');
         const pageDate = new Date(pageDateStr);
-        console.log('as date = "', pageDate, '"');
         if (pageDate) {
-            let localDateStr = pageDate.toLocaleString();
-            if (localDateStr) {
-                localDateStr = localDateStr.trim();
-                if (localDateStr && localDateStr.length > 0) {
-                    updElem.innerText = localDateStr;
-                }
+            const dateOptions = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             }
+            const localDate = pageDate.toLocaleDateString(undefined,dateOptions);
+            const timeOptions = {
+                hour12: true,
+                hour: "numeric",
+                minute: "2-digit"
+            }
+            const localTime = pageDate.toLocaleTimeString([], timeOptions);
+            const hourOffset = -pageDate.getTimezoneOffset()/60;
+            const gmtOffset = "(GMT" + (hourOffset>=0?"+":"") + hourOffset + ")";
+            const localDateTime = localDate + " - " + localTime + " " + gmtOffset;
+            const updElem = document.getElementById("upd");
+            updElem.innerText = localDateTime;
         }
     }
 }
