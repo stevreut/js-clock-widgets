@@ -19,31 +19,41 @@ function startClocks() {
     showDigitalClock("cd");
 }
 
+let pageDate = null;
+let localDateTime = null;
+let zuluTime = null;
+
 function updateDate() {
     const updElem = document.getElementById("upd");
-    if (updElem) {
-        const pageDateStr = updElem.innerText;
-        const pageDate = new Date(pageDateStr);
-        if (pageDate) {
-            const dateOptions = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            }
-            const localDate = pageDate.toLocaleDateString(undefined,dateOptions);
-            const timeOptions = {
-                hour12: true,
-                hour: "numeric",
-                minute: "2-digit"
-            }
-            const localTime = pageDate.toLocaleTimeString([], timeOptions);
-            const hourOffset = -pageDate.getTimezoneOffset()/60;
-            const gmtOffset = "(GMT" + (hourOffset>=0?"+":"") + hourOffset + ")";
-            const localDateTime = localDate + " - " + localTime + " " + gmtOffset;
-            const updElem = document.getElementById("upd");
-            updElem.innerText = localDateTime;
+    zuluTime = updElem.innerText;
+    pageDate = new Date(updElem.innerText);
+    if (pageDate) {
+        const dateOptions = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         }
+        const localDate = pageDate.toLocaleDateString(undefined,dateOptions);
+        const timeOptions = {
+            hour12: true,
+            hour: "numeric",
+            minute: "2-digit"
+        }
+        const localTime = pageDate.toLocaleTimeString([], timeOptions);
+        const hourOffset = -pageDate.getTimezoneOffset()/60;
+        const gmtOffset = "(GMT" + (hourOffset>=0?"+":"") + hourOffset + ")";
+        localDateTime = localDate + " - " + localTime + " " + gmtOffset;
+        const updElem = document.getElementById("upd");
+        updElem.innerText = localDateTime;
+        updElem.addEventListener("mouseenter",()=>{
+            updElem.innerText = zuluTime;
+        });
+        updElem.addEventListener("mouseleave",()=>{
+            setTimeout(()=>{
+                updElem.innerText = localDateTime;
+            },1500);
+        });
     }
 }
 

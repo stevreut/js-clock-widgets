@@ -30,6 +30,5 @@ a:visited {
 }
 #upd {
     color: var(--emph-color);
-    /* font-family: 'Courier New', Courier, monospace; */
     font-style: normal;
 }
