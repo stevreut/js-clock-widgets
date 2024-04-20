@@ -22,9 +22,12 @@ function startClocks() {
 let pageDate = null;
 let localDateTime = null;
 let zuluTime = null;
+const updElem = document.getElementById("upd");
+const defaultUpdColor = updElem.style.color;
+const emphaticUpdColor = "#ebeb89";
 
 function updateDate() {
-    const updElem = document.getElementById("upd");
+    
     zuluTime = updElem.innerText;
     pageDate = new Date(updElem.innerText);
     if (pageDate) {
@@ -46,12 +49,22 @@ function updateDate() {
         localDateTime = localDate + " - " + localTime + " " + gmtOffset;
         const updElem = document.getElementById("upd");
         updElem.innerText = localDateTime;
-        updElem.addEventListener("mouseenter",()=>{
-            updElem.innerText = zuluTime;
+        updElem.addEventListener("mouseover",()=>{
+            setTimeout(()=>{
+                updElem.innerText = zuluTime;
+                updElem.style.color = emphaticUpdColor;
+                setTimeout(()=>{
+                    updElem.style.color = defaultUpdColor;
+                },6000);
+            },300);
         });
-        updElem.addEventListener("mouseleave",()=>{
+        updElem.addEventListener("mouseout",()=>{
             setTimeout(()=>{
                 updElem.innerText = localDateTime;
+                updElem.style.color = emphaticUpdColor;
+                setTimeout(()=>{
+                    updElem.style.color = defaultUpdColor;
+                },6000);
             },1500);
         });
     }
