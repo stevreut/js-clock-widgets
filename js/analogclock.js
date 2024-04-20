@@ -37,7 +37,8 @@ function setUpClock(clockId) {
     }
     setDims(CLOCK_DIMS);
     clockSvgElem = makeSvgElem(null, "svg", {
-        width: CLOCK_DIMS.size, height: CLOCK_DIMS.size
+        viewBox: "0 0 " + CLOCK_DIMS.size + " " + CLOCK_DIMS.size,
+        width: "100%", height: "100%"
     });
     makeSvgElem(clockSvgElem, "rect", {
         x: 0, y: 0, width: CLOCK_DIMS.size, height: CLOCK_DIMS.size, fill: "#1e2334"

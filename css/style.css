@@ -10,6 +10,9 @@
 h2 {
     margin-top: 80px;
 }
+div {
+    max-width: 500px;
+}
 svg {
     margin: 0px;
 }

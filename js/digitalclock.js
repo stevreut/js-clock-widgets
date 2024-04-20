@@ -101,8 +101,9 @@ function setUpClock(clockId) {
         clockAnchorElem = document.getElementById(clockId);
     }
     clockSvgElem = makeSvgElem(null, "svg", {
-        width: 500,
-        height: 165,
+        viewBox: "0 0 500 165",
+        width: "100%",
+        height: "100%",
     })
     makeSvgElem(clockSvgElem, "rect", {
         x: 0,
