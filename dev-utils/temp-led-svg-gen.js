@@ -1,4 +1,4 @@
-import { makeSvgElem } from "../svgutils.js";
+import { makeSvgElem } from "../js/svgutils.js";
 
 let svgAnchElem = null;
 
@@ -12,10 +12,9 @@ const numbin = "1110111;0000011;0111110;0011111;" +
             "1001011;1011101;1111101;0010011;" +
             "1111111;1011111";
 const numBinArr = numbin.split(";");
-console.log("arr size = ", numBinArr.length);
-for (let j=0;j<numBinArr.length;j++) {
-    console.log('bin for ', j, ' = "', numBinArr[j], '"');
-}
+// for (let j=0;j<numBinArr.length;j++) {
+//     console.log('bin for ', j, ' = "', numBinArr[j], '"');
+// }
 
 const PROPS = {
     corner: [60,60],
@@ -48,12 +47,12 @@ function makeSvgPoly(points, isBright) {
         console.log("odd number of values in poly");
         return;
     }
-    console.log("proceeding with polygon construction");    
+    // console.log("proceeding with polygon construction");    
     for (const pt in points) {
         ptStr += (points[pt]+",");
     }
     ptStr = ptStr.substring(0,ptStr.length-1);
-    console.log("ptrStr=\"" + ptStr + "\"");
+    // console.log("ptrStr=\"" + ptStr + "\"");
     makeSvgElem(svgElem,"polygon",{
         id: "p"+ledCount,
         points: ptStr,
@@ -158,7 +157,7 @@ function displayDigitValue() {
         digitValue = 0;
     }
     let template = numBinArr[digitValue];
-    console.log('template = ', template);
+    // console.log('template = ', template);
     for (let i=0;i<7;i++) {
         let elemId = "p" + i;
         let elem = document.getElementById(elemId);
