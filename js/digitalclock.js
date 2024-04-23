@@ -4,6 +4,30 @@ let clockAnchorElem = null;  // Element having id= that clock is attached to
 
 let clockSvgElem = null;     // SVG element for clock
 
+let ledCount = -1;  // TODO - ultimately get rid of this variable
+
+const numbin = "1110111;0000011;0111110;0011111;" +
+            "1001011;1011101;1111101;0010011;" +
+            "1111111;1011111";
+const numBinArr = numbin.split(";");
+
+const PROPS = {
+    corner: [90,60],
+    wid: 280,
+    hgt: 440,
+    hlen: 160,
+    vlen: 160,
+    ledwid: 20, 
+    sep: 4,
+    frcolr: "#ee2222",
+    bgcolr: "#181111",
+    dullColr: "#331111",
+    fullwid: 1700,
+    fullhgt: 480,
+    pairwid: 550,
+    digwid: 230
+}
+
 function drawLedElem(lx,elemIdx,isBright) {
     let lns = [];
     let elemId = "x"+Math.floor(lx)+"d"+elemIdx;
@@ -96,24 +120,146 @@ function displayTwoDigits(idx,dd) {
     displayDigit(idx*157+5,d1);
     displayDigit(idx*157+76,d2);
 }
+
+function makeSvgPoly(points, isBright) {
+    ledCount++;
+    let ptStr = "";
+    if (points.length < 6) {
+        console.log("less than 3 points in poly");
+        return;
+    }
+    if (points.length%2 != 0) {
+        console.log("odd number of values in poly");
+        return;
+    }
+    // console.log("proceeding with polygon construction");    
+    for (const pt in points) {
+        ptStr += (points[pt]+",");
+    }
+    ptStr = ptStr.substring(0,ptStr.length-1);
+    // console.log("ptrStr=\"" + ptStr + "\"");
+    makeSvgElem(clockSvgElem,"polygon",{
+        id: "p"+ledCount,
+        points: ptStr,
+        fill: (isBright?PROPS.frcolr:PROPS.dullColr)
+    });
+}
+
+
+function makeLedElem(xOffs,x1,y1,isHorizontal) {
+    // Creates a single LED digit element in SVG as an
+    // SVG <polygon>
+    let ptArr = [];
+    let x2 = null;
+    let y2 = null;
+    let inc1 = PROPS.ledwid;
+    let inc2 = 2*(PROPS.ledwid+PROPS.sep);
+    if (isHorizontal) {
+        x2 = x1+1;
+        y2 = y1;
+        // horizontal element
+        addIncrPair(ptArr,xOffs+PROPS.corner[0]+x1*PROPS.hlen+inc1+PROPS.sep,
+            PROPS.corner[1]+y1*PROPS.vlen+inc1);
+        addIncrPair(ptArr,-inc1,-inc1);
+        addIncrPair(ptArr,inc1,-inc1);
+        addIncrPair(ptArr,(x2-x1)*PROPS.hlen-inc2,0);
+        addIncrPair(ptArr,inc1,inc1);
+        addIncrPair(ptArr,-inc1,inc1);
+    } else {
+        // vertical element
+        x2 = x1;
+        y2 = y1+1;
+        addIncrPair(ptArr,xOffs+PROPS.corner[0]+x1*PROPS.hlen-inc1,
+            PROPS.corner[1]+y1*PROPS.vlen+inc1+PROPS.sep);
+        addIncrPair(ptArr,inc1,-inc1);
+        addIncrPair(ptArr,inc1,inc1);
+        addIncrPair(ptArr,0,(y2-y1)*PROPS.vlen-inc2);
+        addIncrPair(ptArr,-inc1,inc1);
+        addIncrPair(ptArr,-inc1,-inc1);
+    }
+    ptArr = biasPoints(ptArr);
+    makeSvgPoly(ptArr, false);
+}
+
+function addIncrPair(arr, xinc, yinc) {
+    // Append delta to end of polygon point array
+    // based on previous coordinates as moved by
+    // parameters above.
+    if (arr.length < 2) {
+        arr.push(xinc, yinc);
+    } else {
+        let newx = arr[arr.length-2]+xinc;
+        let newy = arr[arr.length-1]+yinc;
+        arr.push(newx);
+        arr.push(newy);
+    }
+}
+
+function biasPoints(arr) {
+    let newArr = []
+    for (let i=0;i<arr.length;i+=2) {
+        let x = arr[i];
+        let y = arr[i+1];
+        x += PROPS.vlen*0.2-y*0.15;
+        newArr.push(x);
+        newArr.push(y);
+    }
+    return newArr;
+}
+
+
+function setUpSingleDigit(xOffs, lbl) {
+    // Creates SVG element for image of a digital LED digit
+    // svgElem = makeSvgElem(null, "svg", {
+    //     width: PROPS.wid,
+    //     height: PROPS.hgt,
+    //     version: "1.1"
+    // });
+    // makeSvgElem(clockSvgElem, "rect", {
+    //     x: xOffs,
+    //     y: 0,  // TODO
+    //     id: lbl,  // TODO
+    //     width: PROPS.wid,
+    //     height: PROPS.hgt,
+    //     fill: PROPS.bgcolr
+    // })
+    // Make the seven LED elements of a digit
+    const conf = "00V01V00H01H02H10V11V";
+    for (let i=0;i<21;i+=3) {
+        makeLedElem(
+            xOffs,
+            parseInt(conf.charAt(i)),
+            parseInt(conf.charAt(i+1)),
+            (conf.charAt(i+2)==="H")
+        )
+    }
+    clockAnchorElem.appendChild(clockSvgElem);
+}
+function setUpDigits(pairIdx, lbl) {
+    setUpSingleDigit(pairIdx*PROPS.pairwid, lbl+"1");
+    setUpSingleDigit(pairIdx*PROPS.pairwid+PROPS.digwid, lbl+"2");
+}
 function setUpClock(clockId) {
     if (!clockAnchorElem) {
         clockAnchorElem = document.getElementById(clockId);
     }
     clockSvgElem = makeSvgElem(null, "svg", {
-        viewBox: "0 0 500 165",
+        viewBox: "0 0 " + PROPS.fullwid + " " + PROPS.fullhgt,
         width: "100%",
         height: "100%",
     })
     makeSvgElem(clockSvgElem, "rect", {
         x: 0,
         y: 0,
-        width: 500,
-        height: 165,
-        fill: "#202020"
+        width: PROPS.fullwid,
+        height: PROPS.fullhgt,
+        fill: PROPS.bgcolr
     });
-    displayColon(172);
-    displayColon(155+172);
+    setUpDigits(0, "hh");
+    setUpDigits(1, "mm");
+    setUpDigits(2, "ss");
+    displayColon(0);
+    displayColon(1);
     clockAnchorElem.appendChild(clockSvgElem);
 }
 function showTimeOnClock() {
