@@ -229,12 +229,13 @@ function setUpSingleDigit(xOffs, lbl) {
     // })
     // Make the seven LED elements of a digit
     const conf = "00V01V00H01H02H10V11V";
-    for (let i=0;i<21;i+=3) {
+    for (let i=0;i<7;i++) {
+        let j = i*3;
         makeLedElem(
             xOffs,
-            parseInt(conf.charAt(i)),
-            parseInt(conf.charAt(i+1)),
-            (conf.charAt(i+2)==="H"),
+            parseInt(conf.charAt(j)),
+            parseInt(conf.charAt(j+1)),
+            (conf.charAt(j+2)==="H"),
             lbl + i
         )
     }
@@ -289,15 +290,23 @@ function setDigitBlank(labelPrefix) {
         let lbl = labelPrefix + i;
         let elem = document.getElementById(lbl);
         if (elem) {
-            // elem.setAttribute("fill", PROPS.dullColr);
-            elem.setAttribute("fill","#0080ff");
+            elem.setAttribute("fill", PROPS.dullColr);
         } else {
             console.log('no element "' + lbl + '" found');
         }
     }
 }
 function setDigitValue(labelPrefix, val) {
-
+    let template = numBinArr[val];
+    for (let i=0;i<7;i++) {
+        let elemId = labelPrefix + i;
+        let elem = document.getElementById(elemId);
+        if (elem) { 
+            elem.setAttribute("fill",(template.charAt(i)==="1"?PROPS.frcolr:PROPS.dullColr));
+        } else {
+            console.log("element " + elemId + " not found");
+        }
+    }
 }
 function showTimeUnit(labelPrefix, value, blankOutLeadingZero) {
     const v1 = Math.floor(value/10);
@@ -332,7 +341,7 @@ function showTimeOnClock() {
 
 function showDigitalClock(clockId) {
     setUpClock(clockId);
-    setInterval(showTimeOnClock, 5000);  // TODO - change to 200 when done testing
+    setInterval(showTimeOnClock, 200);
 }
 
 export { showDigitalClock };
