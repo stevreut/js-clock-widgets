@@ -4,15 +4,13 @@ let clockAnchorElem = null;  // Element having id= that clock is attached to
 
 let clockSvgElem = null;     // SVG element for clock
 
-let ledCount = -1;  // TODO - ultimately get rid of this variable
-
 const numbin = "1110111;0000011;0111110;0011111;" +
             "1001011;1011101;1111101;0010011;" +
             "1111111;1011111";
 const numBinArr = numbin.split(";");
 
 const PROPS = {
-    corner: [90,60],
+    corner: [90,80],
     wid: 280,
     hgt: 440,
     hlen: 160,
@@ -22,108 +20,14 @@ const PROPS = {
     frcolr: "#ee2222",
     bgcolr: "#181111",
     dullColr: "#331111",
-    fullwid: 1700,
+    fullwid: 1680,
     fullhgt: 480,
     pairwid: 550,
     digwid: 230,
     colonOffs: 10
 }
 
-// function drawLedElem(lx,elemIdx,isBright) {
-//     let lns = [];
-//     let elemId = "x"+Math.floor(lx)+"d"+elemIdx;
-//     let elem = document.getElementById(elemId);
-//     let elExists = (elem != null);
-//     switch(elemIdx) {
-//         case 0:
-//             lns = [0,0,0,1];
-//             break;
-//         case 1:
-//             lns = [0,1,0,2];
-//             break;
-//         case 2:
-//             lns = [0,0,1,0];
-//             break;
-//         case 3:
-//             lns = [0,1,1,1];
-//             break;
-//         case 4:
-//             lns = [0,2,1,2];
-//             break;
-//         case 5:
-//             lns = [1,0,1,1];
-//             break;
-//         case 6:
-//             lns = [1,1,1,2];
-//             break;
-//         default:
-//             console.log('unexpected default - elemIdx = ', elemIdx);
-//             return;
-//     }
-//     lns = lns.map((val)=>val*50+30);
-//     if (elExists) {
-//         elem.setAttribute("stroke", (isBright?"#e02000":"#302220"));
-//     } else {
-//         lns[0]+=lx;
-//         lns[2]+=lx;
-//         elem = makeSvgElem(clockSvgElem, "line", {
-//             id: elemId, x1: lns[0], y1: lns[1], x2: lns[2], y2: lns[3],
-//             stroke: (isBright?"#e02000":"#302220"),
-//             stroke$width: 5
-//         });
-//     }
-// }
-// function displayDigit(lx,d) {
-//     if (d < 0 || d > 9) {
-//         console.log('invalid digit = ', d, '  type=', typeof d);
-//         return;
-//     }
-//     const arr = [119,3,62,31,75,93,125,19,127,91];
-//     if (arr.length != 10) {
-//         console.log('unexpected arr len ', arr.length);
-//         return;
-//     }
-//     let eArr = [];
-//     let wrk = arr[d];
-//     for (let i=6;i>=0;i--) {
-//         eArr[i] = (wrk%2 === 1);
-//         wrk >>>= 1;  // TODO - consider bit shift, but have to be careful: >>= or >>>= ?
-//     }
-//     for (let j=0;j<7;j++) {
-//         drawLedElem(lx,j,eArr[j]);
-//     }
-// }
-// function displayColon(lx) {
-//     let col1 = document.getElementById("col1");
-//     let col2 = document.getElementById("col2");
-//     if (!col1) {
-//         col1 = makeSvgElem(clockSvgElem, "rect", {
-//             x: lx,
-//             y: 55,
-//             width: 5,
-//             height: 5,
-//             fill: "#e02000"
-//         });
-//     }
-//     if (!col2) {
-//         col2 = makeSvgElem(clockSvgElem,"rect", {
-//             x: lx,
-//             y: 115,
-//             width: 5,
-//             height: 5,
-//             fill: "#e02000"
-//         })
-//     }
-// }
-// function displayTwoDigits(idx,dd) {
-//     let d2 = dd%10;
-//     let d1 = Math.floor(dd/10);
-//     displayDigit(idx*157+5,d1);
-//     displayDigit(idx*157+76,d2);
-// }
-
 function makeSvgPoly(points, isBright, lbl) {
-    ledCount++;
     let ptStr = "";
     if (points.length < 6) {
         console.log("less than 3 points in poly");
@@ -133,12 +37,10 @@ function makeSvgPoly(points, isBright, lbl) {
         console.log("odd number of values in poly");
         return;
     }
-    // console.log("proceeding with polygon construction");    
     for (const pt in points) {
         ptStr += (points[pt]+",");
     }
     ptStr = ptStr.substring(0,ptStr.length-1);
-    // console.log("ptrStr=\"" + ptStr + "\"");
     let attribs = {
         points: ptStr,
         fill: (isBright?PROPS.frcolr:PROPS.dullColr)
@@ -148,7 +50,6 @@ function makeSvgPoly(points, isBright, lbl) {
     }
     makeSvgElem(clockSvgElem,"polygon", attribs);
 }
-
 
 function makeLedElem(xOffs,x1,y1,isHorizontal,lbl) {
     // Creates a single LED digit element in SVG as an
@@ -211,22 +112,8 @@ function biasPoints(arr) {
     return newArr;
 }
 
-
 function setUpSingleDigit(xOffs, lbl) {
     // Creates SVG element for image of a digital LED digit
-    // svgElem = makeSvgElem(null, "svg", {
-    //     width: PROPS.wid,
-    //     height: PROPS.hgt,
-    //     version: "1.1"
-    // });
-    // makeSvgElem(clockSvgElem, "rect", {
-    //     x: xOffs,
-    //     y: 0,  // TODO
-    //     id: lbl,  // TODO
-    //     width: PROPS.wid,
-    //     height: PROPS.hgt,
-    //     fill: PROPS.bgcolr
-    // })
     // Make the seven LED elements of a digit
     const conf = "00V01V00H01H02H10V11V";
     for (let i=0;i<7;i++) {
@@ -241,10 +128,12 @@ function setUpSingleDigit(xOffs, lbl) {
     }
     clockAnchorElem.appendChild(clockSvgElem);
 }
+
 function setUpDigits(pairIdx, lbl) {
     setUpSingleDigit(pairIdx*PROPS.pairwid, lbl+"-a-");
     setUpSingleDigit(pairIdx*PROPS.pairwid+PROPS.digwid, lbl+"-b-");
 }
+
 function setUpDot(x, y) {
     let ptArr = [];
     const DIAG = PROPS.ledwid-PROPS.sep;
@@ -255,13 +144,15 @@ function setUpDot(x, y) {
     ptArr = biasPoints(ptArr);
     makeSvgPoly(ptArr, true, null);
 }
+
 function setUpColon(idx) {
     const COL_OFFS = PROPS.corner[0]+idx*PROPS.pairwid+2*PROPS.digwid+PROPS.colonOffs;
-    let cVert = PROPS.corner[1]+PROPS.hlen/2;  // TODO
+    let cVert = PROPS.corner[1]+PROPS.hlen/2;
     setUpDot(COL_OFFS, cVert);
     cVert += PROPS.hlen;
     setUpDot(COL_OFFS, cVert);
 }
+
 function setUpClock(clockId) {
     if (!clockAnchorElem) {
         clockAnchorElem = document.getElementById(clockId);
@@ -285,6 +176,7 @@ function setUpClock(clockId) {
     setUpColon(1);
     clockAnchorElem.appendChild(clockSvgElem);
 }
+
 function setDigitBlank(labelPrefix) {
     for (let i=0;i<7;i++) {
         let lbl = labelPrefix + i;
@@ -296,6 +188,7 @@ function setDigitBlank(labelPrefix) {
         }
     }
 }
+
 function setDigitValue(labelPrefix, val) {
     let template = numBinArr[val];
     for (let i=0;i<7;i++) {
@@ -308,6 +201,7 @@ function setDigitValue(labelPrefix, val) {
         }
     }
 }
+
 function showTimeUnit(labelPrefix, value, blankOutLeadingZero) {
     const v1 = Math.floor(value/10);
     const v2 = value%10;
@@ -320,6 +214,7 @@ function showTimeUnit(labelPrefix, value, blankOutLeadingZero) {
     }
     setDigitValue(idPrefix2, v2);
 }
+
 function showTimeOnClock() {
     let nowTime = new Date();
     let hh = nowTime.getHours();
@@ -334,9 +229,6 @@ function showTimeOnClock() {
     showTimeUnit("hh", hh, true);
     showTimeUnit("mm", mm, false);
     showTimeUnit("ss", ss, false);
-    // displayTwoDigits(0, hh);
-    // displayTwoDigits(1, mm);
-    // displayTwoDigits(2, ss);
 }
 
 function showDigitalClock(clockId) {
