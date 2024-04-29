@@ -26,7 +26,8 @@ const numBinArr = numbin.split(";");
 
 const PROPS = {
     corner: [45,30],
-    wid: 160,
+    widPerDigit: 200,
+    wid: 500,
     hgt: 190,
     hlen: 80,
     vlen: 65,
@@ -42,14 +43,20 @@ let dig2 = null;
 
 window.addEventListener("load", (event) => {
     // Upon loading the page ...
-    let svgAnchElem = document.getElementById("pid2");
-    let svgElem = makeSvgElem(svgAnchElem, "svg", {
+    // let svgAnchElem2 = document.getElementById("pid2");
+    // let svgElem2 = makeSvgElem(svgAnchElem2, "svg", {
+    //     width: PROPS.wid,
+    //     height: PROPS.hgt,
+    //     version: "1.1"
+    // });
+    let svgElem1 = makeSvgElem(document.getElementById("pid1"), "svg", {
         width: PROPS.wid,
         height: PROPS.hgt,
         version: "1.1"
-    });
-    // dig1 = createSvgDigitImg(1);
-    dig2 = createSvgDigitImg(svgElem, 2);
+    })
+    dig1 = createSvgDigitImg(svgElem1, 0);
+    dig1.ledElem[0].setAttribute("fill","yellow");  // TODO - test code
+    dig2 = createSvgDigitImg(svgElem1, 1);
     dig2.ledElem[4].setAttribute("fill","red");  // TODO - test code
     dig2.ledElem[6].setAttribute("fill","#0080ff");  // TODO - test code
     console.log('dig2 (no string) = ', dig2);
@@ -84,7 +91,7 @@ function makeSvgPoly(svgParent, points, isBright) {
     return svgPoly;
 }
 
-function createSvgDigitImg(svgParent, n /*TODO*/) {
+function createSvgDigitImg(svgParent, digNum /*TODO*/) {
     // Creates SVG for image of a digital LED digit
     // TODO - one rect PER DIGIT? (rather than per collection of digits)
     let digitSvg = {
@@ -92,9 +99,9 @@ function createSvgDigitImg(svgParent, n /*TODO*/) {
         ledElem: []
     };
     digitSvg.rect = makeSvgElem(svgParent, "rect", {
-        x: 0,
+        x: 0+digNum*PROPS.widPerDigit,
         y: 0,
-        width: PROPS.wid,
+        width: PROPS.widPerDigit-10,  // TODO
         height: PROPS.hgt,
         fill: PROPS.bgcolr
     })
@@ -105,6 +112,7 @@ function createSvgDigitImg(svgParent, n /*TODO*/) {
         j += 3;
         let ledPolySvg = makeLedElem(
             svgParent,
+            digNum,
             parseInt(conf.charAt(j)),
             parseInt(conf.charAt(j+1)),
             (conf.charAt(j+2)==="H")
@@ -117,7 +125,7 @@ function createSvgDigitImg(svgParent, n /*TODO*/) {
     return digitSvg;
 }
 
-function makeLedElem(svgParent, x1,y1,isHorizontal) {
+function makeLedElem(svgParent,digNum,x1,y1,isHorizontal) {
     // Creates a single LED digit element in SVG as an
     // SVG <polygon>
     let ptArr = [];
@@ -129,7 +137,7 @@ function makeLedElem(svgParent, x1,y1,isHorizontal) {
         x2 = x1+1;
         y2 = y1;
         // horizontal element
-        addIncrPair(ptArr,PROPS.corner[0]+x1*PROPS.hlen+inc1+PROPS.sep,
+        addIncrPair(ptArr,PROPS.widPerDigit*digNum+PROPS.corner[0]+x1*PROPS.hlen+inc1+PROPS.sep,
             PROPS.corner[1]+y1*PROPS.vlen+inc1);
         addIncrPair(ptArr,-inc1,-inc1);
         addIncrPair(ptArr,inc1,-inc1);
@@ -140,7 +148,7 @@ function makeLedElem(svgParent, x1,y1,isHorizontal) {
         // vertical element
         x2 = x1;
         y2 = y1+1;
-        addIncrPair(ptArr,PROPS.corner[0]+x1*PROPS.hlen-inc1,
+        addIncrPair(ptArr,PROPS.widPerDigit*digNum+PROPS.corner[0]+x1*PROPS.hlen-inc1,
             PROPS.corner[1]+y1*PROPS.vlen+inc1+PROPS.sep);
         addIncrPair(ptArr,inc1,-inc1);
         addIncrPair(ptArr,inc1,inc1);
@@ -173,6 +181,7 @@ function biasPoints(arr) {
         let x = arr[i];
         let y = arr[i+1];
         x += PROPS.vlen*0.2-y*0.15;
+        x = Math.round(x*1000)/1000;  // TODO - new code - limits precision to 3 digits after decimal
         newArr.push(x);
         newArr.push(y);
     }
