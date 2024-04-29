@@ -1,9 +1,5 @@
 import { makeSvgElem } from "../js/svgutils.js";
 
-// let svgAnchElem = null;
-
-let ledCount = -1;
-
 let digitValue = -1;
 
 const numbin = "1110111;0000011;0111110;0011111;" +
@@ -11,23 +7,10 @@ const numbin = "1110111;0000011;0111110;0011111;" +
             "1111111;1011111";
 const numBinArr = numbin.split(";");
 
-// const PROPS = {
-//     corner: [60,60],
-//     wid: 280,
-//     hgt: 440,
-//     hlen: 160,
-//     vlen: 160,
-//     ledwid: 20, 
-//     sep: 4,
-//     frcolr: "#ee2222",
-//     bgcolr: "#181111",
-//     dullColr: "#331111"
-// }
-
 const PROPS = {
     corner: [45,30],
-    widPerDigit: 200,
-    wid: 500,
+    widPerDigit: 170,
+    wid: 340,
     hgt: 190,
     hlen: 80,
     vlen: 65,
@@ -54,21 +37,22 @@ window.addEventListener("load", (event) => {
         height: PROPS.hgt,
         version: "1.1"
     })
+    makeSvgElem(svgElem1, "rect", {
+        x: 0,
+        y: 0,
+        width: PROPS.wid,
+        height: PROPS.hgt,
+        fill: "#804040"
+    })
     dig1 = createSvgDigitImg(svgElem1, 0);
-    dig1.ledElem[0].setAttribute("fill","yellow");  // TODO - test code
     dig2 = createSvgDigitImg(svgElem1, 1);
-    dig2.ledElem[4].setAttribute("fill","red");  // TODO - test code
-    dig2.ledElem[6].setAttribute("fill","#0080ff");  // TODO - test code
-    console.log('dig2 (no string) = ', dig2);
+    // setDigitValue(dig1,'6');
     let dig2json = JSON.stringify(dig2);
-    console.log('dig 2 = "' + dig2json + '"');
     let elemjson = JSON.stringify(dig2.ledElem);
-    console.log('led = "' + elemjson + '"');
-    // walkThruDigitValues();  // TODO - re-enable after initial testing
+    walkThruDigitValues();  // TODO - re-enable after initial testing
 });
 
 function makeSvgPoly(svgParent, points, isBright) {
-    ledCount++;
     let ptStr = "";
     if (points.length < 6) {
         console.log("less than 3 points in poly");
@@ -91,10 +75,34 @@ function makeSvgPoly(svgParent, points, isBright) {
     return svgPoly;
 }
 
+function setDigitValue(digit, value) {
+    // digit = digitSvg object
+    // value = character (blank, or decimal '0' through '9')
+    if (value === digit.value) {
+        return;
+    }
+    if (value === ' ') {
+        for (let i=0;i<7;i++) {
+            digit.ledElem[i].setAttribute("fill",PROPS.dullColr);
+        }
+    } else {
+        if (value.length === 1) {
+            if (value >= '0' && value <= '9') {
+                let template = numBinArr[parseInt(value)];
+                for (let j=0;j<7;j++) {
+                    let fillTrue = (template.charAt(j)==='1');
+                    let fillColr = (fillTrue?PROPS.frcolr:PROPS.dullColr);
+                    digit.ledElem[j].setAttribute("fill",fillColr);
+                }
+            }
+        }
+    }
+}
+
 function createSvgDigitImg(svgParent, digNum /*TODO*/) {
     // Creates SVG for image of a digital LED digit
-    // TODO - one rect PER DIGIT? (rather than per collection of digits)
     let digitSvg = {
+        value: ' ',
         rect: null,
         ledElem: []
     };
@@ -118,10 +126,10 @@ function createSvgDigitImg(svgParent, digNum /*TODO*/) {
             (conf.charAt(j+2)==="H")
         );
         digitSvg.ledElem.push(ledPolySvg);
-        console.log('digitSvg.ledElem = ', digitSvg.ledElem);
         svgParent.appendChild(ledPolySvg);
     }
     // svgAnchElem.appendChild(svgParent);
+    setDigitValue(digitSvg,' ');
     return digitSvg;
 }
 
@@ -189,23 +197,22 @@ function biasPoints(arr) {
 }
 
 function walkThruDigitValues() {
-    setInterval(displayDigitValue,700);
+    setInterval(displayDigitValue,600);
 }
 
 function displayDigitValue() {
     digitValue++;
-    if (digitValue>9) {
+    if (digitValue>99) {
         digitValue = 0;
     }
-    let template = numBinArr[digitValue];
-    // console.log('template = ', template);
-    for (let i=0;i<7;i++) {
-        let elemId = "p" + i;
-        let elem = document.getElementById(elemId);
-        if (elem) { 
-            elem.setAttribute("fill",(template.charAt(i)==="1"?PROPS.frcolr:PROPS.dullColr));
-        } else {
-            console.log("element " + elemId + " not found");
-        }
+    let val1 = ' ';
+    let val2 = ' ';
+    if (digitValue < 10) {
+        val1 = ' ';
+    } else {
+        val1 = Math.floor(digitValue/10).toString();
     }
+    val2 = (digitValue%10).toString();
+    setDigitValue(dig1, val1);
+    setDigitValue(dig2, val2);
 }
