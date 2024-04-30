@@ -1,9 +1,46 @@
 import { makeSvgCenteredCircle, makeSvgElem, makeSvgLine, setAtts, setDims } from "./svgutils.js";
 
+const THEME_COLOR_1 = "#ffbdc3";
+const THEME_COLOR_2 = "#000000";
+
 const CLOCK_DIMS = {
     radius: 220,
     size: 500,
-    ctr: 250
+    ctr: 250,
+    border: 2,
+    knobRadius: 0.025,
+    borderColor: THEME_COLOR_1,
+    faceColor: "#a3bdc3",
+    knobColor: THEME_COLOR_1,
+    backgroundColor: "#1e2334",
+    hatchingRadius: 0.96,
+    hourHand: {
+        len: 0.5,
+        wid: 0.04,
+        colr: THEME_COLOR_2
+    },
+    minuteHand: {
+        len: 0.85,
+        wid: 0.03,
+        colr: THEME_COLOR_2
+    },
+    secondHand: {
+        len: 0.93,
+        wid: 0.01,
+        colr: THEME_COLOR_1
+    },
+    hourHatching: {
+        count: 12,
+        len: 0.065,
+        wid: 0.03,
+        colr: THEME_COLOR_2
+    },
+    minuteHatching: {
+        count: 60,
+        len: 0.015,
+        wid: 0.015,
+        colr: THEME_COLOR_1
+    }
 }
 
 let clockAnchorToElem = null;   
@@ -41,16 +78,49 @@ function setUpClock(clockId) {
         width: "100%", height: "100%"
     });
     makeSvgElem(clockSvgElem, "rect", {
-        x: 0, y: 0, width: CLOCK_DIMS.size, height: CLOCK_DIMS.size, fill: "#1e2334"
+        x: 0, y: 0, width: CLOCK_DIMS.size, height: CLOCK_DIMS.size,
+        fill: CLOCK_DIMS.backgroundColor
     });
-    makeSvgCenteredCircle(clockSvgElem, null, CLOCK_DIMS.radius+2, "#ffbdc3");
-    makeSvgCenteredCircle(clockSvgElem, null, CLOCK_DIMS.radius, "#a3bdc3");
-    makeSvgCenteredCircle(clockSvgElem, null, 5, "#ffbdc3");
+    makeSvgCenteredCircle(clockSvgElem, null, CLOCK_DIMS.radius+CLOCK_DIMS.border,
+        CLOCK_DIMS.borderColor);
+    makeSvgCenteredCircle(clockSvgElem, null, CLOCK_DIMS.radius, CLOCK_DIMS.faceColor);
+    makeSvgCenteredCircle(clockSvgElem, null, CLOCK_DIMS.radius*CLOCK_DIMS.knobRadius, CLOCK_DIMS.knobColor);
+    makeHatching(clockSvgElem,CLOCK_DIMS.minuteHatching);
+    makeHatching(clockSvgElem,CLOCK_DIMS.hourHatching);
     makeSvgLine(clockSvgElem, "hrHand");
     makeSvgLine(clockSvgElem, "mnHand");
     makeSvgLine(clockSvgElem, "scHand");
     clockAnchorToElem.appendChild(clockSvgElem);
     return clockSvgElem;
+}
+function makeHatching(parentSvg, hatchParms) {
+    if (!hatchParms) {
+        return;
+    }
+    if (!(typeof hatchParms.count === 'number')) {
+        return;
+    }
+    if (hatchParms.count < 2) {
+        return;
+    }
+    let count = hatchParms.count;
+    let angleIncr = 2*Math.PI/count;
+    let r1 = CLOCK_DIMS.radius*(CLOCK_DIMS.hatchingRadius-hatchParms.len);
+    let r2 = CLOCK_DIMS.radius*CLOCK_DIMS.hatchingRadius;
+    for (let i=0;i<count;i++) {
+        let angle = angleIncr*i;
+        let cs = Math.cos(angle);
+        let sn = Math.sin(angle);
+        let attr = {
+            x1: CLOCK_DIMS.ctr+r1*sn,
+            y1: CLOCK_DIMS.ctr+r1*cs,
+            x2: CLOCK_DIMS.ctr+r2*sn,
+            y2: CLOCK_DIMS.ctr+r2*cs,
+            stroke$width: hatchParms.wid*CLOCK_DIMS.radius,
+            stroke: hatchParms.colr
+        }
+        makeSvgElem(parentSvg, "line", attr);
+    }
 }
 function updateClockTime() {
     if (clockAnchorToElem) {
@@ -72,9 +142,12 @@ function updateClockTime() {
         let secAngle = totMils/(60*1000);
         secAngle = secAngle-Math.floor(secAngle);
         secAngle *= (2*Math.PI);
-        drawClockHand ("hrHand", hourAngle, CLOCK_DIMS.radius*0.5, CLOCK_DIMS.radius*0.04, '#000000');
-        drawClockHand ("mnHand", minAngle, CLOCK_DIMS.radius*0.85, CLOCK_DIMS.radius*0.03, '#000000');
-        drawClockHand ("scHand", secAngle, CLOCK_DIMS.radius*0.93, CLOCK_DIMS.radius*0.01, '#ffbdc3');
+        drawClockHand ("hrHand", hourAngle, CLOCK_DIMS.radius*CLOCK_DIMS.hourHand.len,
+            CLOCK_DIMS.radius*CLOCK_DIMS.hourHand.wid, CLOCK_DIMS.hourHand.colr);
+        drawClockHand ("mnHand", minAngle, CLOCK_DIMS.radius*CLOCK_DIMS.minuteHand.len,
+            CLOCK_DIMS.radius*CLOCK_DIMS.minuteHand.wid, CLOCK_DIMS.minuteHand.colr);
+        drawClockHand ("scHand", secAngle, CLOCK_DIMS.radius*CLOCK_DIMS.secondHand.len,
+            CLOCK_DIMS.radius*CLOCK_DIMS.secondHand.wid, CLOCK_DIMS.secondHand.colr);
     }
 }
 function showAnalogClock(clockId) {
