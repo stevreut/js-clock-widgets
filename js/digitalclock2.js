@@ -1,4 +1,4 @@
-import { makeSvgElem } from "./svgutils.js";
+import { makeSvgElem, setAtts } from "./svgutils.js";
 
 class DigitalClock {
     constructor (id, width, height, attribs) {
@@ -27,12 +27,50 @@ class DigitalClock {
             height: this.height,
             fill: this.backgroundColor
         });
+        let testCirclAttribs = {  // TODO - TEST!!
+            cx : 50,
+            cy : 50,
+            r : 30
+        }
+        this.testLed = new LedElem(makeSvgElem(this.rootSvgElem, "circle", testCirclAttribs), "red", "#0000a0", true);
         // TODO
         this.idAnchorElem.append(this.rootSvgElem);
     }
     static initialTime() {
         console.log('initialTime invoked');
         return 4;  // TODO - obviously
+    }
+}
+
+class LedElem {
+    constructor(svgElem, onColor, offColor, isOn) {
+        this.svgElem = svgElem;
+        this.onColor = onColor;
+        this.offColor = offColor;
+        this.isOn = isOn;
+        this.color = (this.isOn?this.onColor:this.offColor);
+        setAtts(this.svgElem, { fill: this.color });
+    }
+    turnOn() {
+        if (!this.isOn) {
+            this.isOn = true;
+            this.color = this.onColor;
+            setAtts(this.svgElem, { fill: this.color });
+        }
+    }
+    turnOff() {
+        if (this.isOn) {
+            this.isOn = false;
+            this.color = this.offColor;
+            setAtts(this.svgElem, { fill: this.color });
+        }
+    }
+    flipState() {
+        if (this.isOn) {
+            this.turnOff();
+        } else {
+            this.turnOn();
+        }
     }
 }
 
@@ -45,6 +83,8 @@ function setUpClock(clockId, width, height, attributes) {
 
 function showTimeOnClock() {
     console.log('d2 showTimeOnClock not yet implemented');  // TODO
+    theClock.testLed.flipState();
+    console.log('led state flipped at ' + (new Date()));
 }
 
 function showDigitalClock2(clockId, wid, hgt, attribs) {
