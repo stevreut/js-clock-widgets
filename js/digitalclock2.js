@@ -5,8 +5,10 @@ class DigitalClock {
         this.id = id;
         this.width = width;
         this.height = height;
-        this.backgroundColor = attribs.backgroundColor;
+        this.backgroundColor = (attribs.backgroundColor?attribs.backgroundColor:"#000000");
         this.idAnchorElem = document.getElementById(id);
+        this.timeValue = DigitalClock.initialTime();
+        console.log('this.timeValue = "' + this.timeValue + '"');
         if (id) {
             console.log('anchor element found')
         } else {
@@ -27,6 +29,10 @@ class DigitalClock {
         });
         // TODO
         this.idAnchorElem.append(this.rootSvgElem);
+    }
+    static initialTime() {
+        console.log('initialTime invoked');
+        return 4;  // TODO - obviously
     }
 }
 
