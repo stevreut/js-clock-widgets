@@ -6,6 +6,8 @@ class DigitalClock {
         this.width = width;
         this.height = height;
         this.backgroundColor = (attribs.backgroundColor?attribs.backgroundColor:"#000000");
+        this.onColor = (attribs.onColor?attribs.onColor:"#ff0000");
+        this.offColor = (attribs.offColor?attribs.offColor:this.backgroundColor);
         this.idAnchorElem = document.getElementById(id);
         this.timeValue = DigitalClock.initialTime();
         console.log('this.timeValue = "' + this.timeValue + '"');
@@ -27,18 +29,37 @@ class DigitalClock {
             height: this.height,
             fill: this.backgroundColor
         });
-        let testCirclAttribs = {  // TODO - TEST!!
-            cx : 50,
-            cy : 50,
-            r : 30
+        // let testCirclAttribs = {  // TODO - TEST!!
+        //     cx : 50,
+        //     cy : 50,
+        //     r : 30
+        // }
+        this.testLed = [];
+        for (let i=0;i<6;i++) {
+            this.testLed.push(new LedElem(makeSvgElem(this.rootSvgElem, "circle", {
+                cx: 80*i+50,
+                cy: 50,
+                r: 30
+            }),
+            this.onColor,
+            this.offColor,
+            true));
         }
-        this.testLed = new LedElem(makeSvgElem(this.rootSvgElem, "circle", testCirclAttribs), "red", "#0000a0", true);
+        // this.testLed = new LedElem(makeSvgElem(this.rootSvgElem, "circle", testCirclAttribs), 
+        //     this.onColor,
+        //     this.offColor,
+        //     true);
         // TODO
         this.idAnchorElem.append(this.rootSvgElem);
     }
     static initialTime() {
         console.log('initialTime invoked');
         return 4;  // TODO - obviously
+    }
+    testFlip() {  // TODO - test method only - to be deleted
+        console.log('testFlip() invoked at ' + (new Date()));
+        const idx = Math.floor(Math.random()*this.testLed.length);
+        this.testLed[idx].flipState();
     }
 }
 
@@ -83,14 +104,14 @@ function setUpClock(clockId, width, height, attributes) {
 
 function showTimeOnClock() {
     console.log('d2 showTimeOnClock not yet implemented');  // TODO
-    theClock.testLed.flipState();
+    theClock.testFlip();
     console.log('led state flipped at ' + (new Date()));
 }
 
 function showDigitalClock2(clockId, wid, hgt, attribs) {
     console.log('showDigitalClock2 not yet fully implemented');  // TODO
     setUpClock(clockId, wid, hgt, attribs);
-    setInterval(showTimeOnClock, 3300);  // TODO - probably should be reduced to about 20 after implementation is close to final
+    setInterval(showTimeOnClock, 400);  // TODO - probably should be reduced to about 20 after implementation is close to final
 }
 
 export { showDigitalClock2 };

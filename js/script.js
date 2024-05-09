@@ -21,9 +21,11 @@ function startClocks() {
     // Attach 2nd version of digital clock to the element having id="cd2"
     try {
         const attribs = {
-            backgroundColor: "lime"  // TODO
+            backgroundColor: "#181111",
+            onColor: "#1880ff",
+            offColor: "#181180"
         }
-        showDigitalClock2("cd2", 500, 150, attribs);
+        showDigitalClock2("cd2", 500, 100, attribs);
     } catch (error) {
         console.log('error attempting to attached to id=cd2');
         console.log('error = ' + error);

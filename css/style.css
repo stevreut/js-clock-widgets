@@ -38,3 +38,6 @@ a:visited {
     color: var(--emph-color);
     font-style: normal;
 }
+em {
+    color: #ebeb89;
+}
