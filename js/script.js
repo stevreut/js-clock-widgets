@@ -1,5 +1,6 @@
 import { showAnalogClock } from "./analogclock.js";
-import { showDigitalClock } from "./digitalclock.js"
+import { showDigitalClock } from "./digitalclock.js";
+import { showDigitalClock2 } from "./digitalclock2.js";
 
 window.addEventListener("load", (event) => {
     // Upon loading the page ...
@@ -17,6 +18,13 @@ function startClocks() {
     showAnalogClock("ca");
     // Attach a digital clock to the element having id="cd".
     showDigitalClock("cd");
+    // Attach 2nd version of digital clock to the element having id="cd2"
+    try {
+        showDigitalClock2("cd2");
+    } catch (error) {
+        console.log('error attempting to attached to id=cd2');
+        console.log('error = ' + error);
+    }
 }
 
 let pageDate = null;
