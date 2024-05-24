@@ -2,7 +2,8 @@ import { makeSvgElem } from "./svgutils.js";
 
 let clockAnchorElem = null;  // Element having id= that clock is attached to
 
-let clockSvgElem = null;     // SVG element for clock
+let clockSvgElemOuter = null;
+let clockSvgGroupElem = null;     // SVG element for clock
 
 const numbin = "1110111;0000011;0111110;0011111;" +
             "1001011;1011101;1111101;0010011;" +
@@ -24,8 +25,11 @@ const PROPS = {
     fullhgt: 480,
     pairwid: 550,
     digwid: 230,
-    colonOffs: 10
+    colonOffs: 10,
+    skew: 8.5
 }
+
+let skewCompensation = 0;
 
 function makeSvgPoly(points, isBright, lbl) {
     let ptStr = "";
@@ -48,7 +52,7 @@ function makeSvgPoly(points, isBright, lbl) {
     if (lbl) {
         attribs.id = lbl;
     }
-    makeSvgElem(clockSvgElem,"polygon", attribs);
+    makeSvgElem(clockSvgGroupElem,"polygon", attribs);
 }
 
 function makeLedElem(xOffs,x1,y1,isHorizontal,lbl) {
@@ -82,7 +86,6 @@ function makeLedElem(xOffs,x1,y1,isHorizontal,lbl) {
         addIncrPair(ptArr,-inc1,inc1);
         addIncrPair(ptArr,-inc1,-inc1);
     }
-    ptArr = biasPoints(ptArr);
     makeSvgPoly(ptArr, false, lbl);
 }
 
@@ -100,18 +103,6 @@ function addIncrPair(arr, xinc, yinc) {
     }
 }
 
-function biasPoints(arr) {
-    let newArr = []
-    for (let i=0;i<arr.length;i+=2) {
-        let x = arr[i];
-        let y = arr[i+1];
-        x += PROPS.vlen*0.2-y*0.15;
-        newArr.push(x);
-        newArr.push(y);
-    }
-    return newArr;
-}
-
 function setUpSingleDigit(xOffs, lbl) {
     // Creates SVG element for image of a digital LED digit
     // Make the seven LED elements of a digit
@@ -126,7 +117,7 @@ function setUpSingleDigit(xOffs, lbl) {
             lbl + i
         )
     }
-    clockAnchorElem.appendChild(clockSvgElem);
+    clockSvgElemOuter.appendChild(clockSvgGroupElem);
 }
 
 function setUpDigits(pairIdx, lbl) {
@@ -141,7 +132,6 @@ function setUpDot(x, y) {
     addIncrPair(ptArr, DIAG, DIAG);
     addIncrPair(ptArr, -DIAG, DIAG);
     addIncrPair(ptArr, -DIAG, -DIAG);
-    ptArr = biasPoints(ptArr);
     makeSvgPoly(ptArr, true, null);
 }
 
@@ -157,24 +147,28 @@ function setUpClock(clockId) {
     if (!clockAnchorElem) {
         clockAnchorElem = document.getElementById(clockId);
     }
-    clockSvgElem = makeSvgElem(null, "svg", {
+    clockSvgElemOuter = makeSvgElem(null, "svg", {
         viewBox: "0 0 " + PROPS.fullwid + " " + PROPS.fullhgt,
         width: "100%",
         height: "100%",
     })
-    makeSvgElem(clockSvgElem, "rect", {
+    makeSvgElem(clockSvgElemOuter, "rect", {
         x: 0,
         y: 0,
         width: PROPS.fullwid,
         height: PROPS.fullhgt,
         fill: PROPS.bgcolr
     });
+    skewCompensation = Math.tan(PROPS.skew*Math.PI/180)*PROPS.vlen;
+    clockSvgGroupElem = makeSvgElem(clockSvgElemOuter, "g", {
+        transform: "skewX(" + (-PROPS.skew) + ") translate(" + skewCompensation + ",0)"
+    });
     setUpDigits(0, "hh");
     setUpDigits(1, "mm");
     setUpDigits(2, "ss");
     setUpColon(0);
     setUpColon(1);
-    clockAnchorElem.appendChild(clockSvgElem);
+    clockAnchorElem.appendChild(clockSvgElemOuter);
 }
 
 function setDigitBlank(labelPrefix) {

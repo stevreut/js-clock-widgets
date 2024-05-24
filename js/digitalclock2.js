@@ -220,7 +220,7 @@ function showTimeOnClock() {
 function showDigitalClock2(clockId, wid, hgt, attribs) {
     console.log('showDigitalClock2 not yet fully implemented');  // TODO
     setUpClock(clockId, wid, hgt, attribs);
-    setInterval(showTimeOnClock, 3205);  // TODO - probably should be reduced to about 20 after implementation is close to final
+    setInterval(showTimeOnClock, 10);  // TODO - probably should be reduced to about 20 after implementation is close to final
 }
 
 export { showDigitalClock2 };
