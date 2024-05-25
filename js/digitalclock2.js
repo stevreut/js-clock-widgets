@@ -51,7 +51,7 @@ class DigitalClock {
             this.digits.push(new Digit(this.rootSvgElem, initXOffset+i*digitWidth, initYOffset, 
                     this.onColor, this.offColor, this.timeValue.charAt(i),
                     len,
-                    wid
+                    wid,
                 )
             );
         }   
