@@ -37,12 +37,23 @@ class DigitalClock {
         //     this.offColor,
         //     true));
         // }
+        let ledWidth = (attribs.ledWidth?attribs.ledWidth:5);
+        let ledHeight = (attribs.ledHeight?attribs.ledHeight:35);
+        let digitWidth = (attribs.digitWidth?attribs.digitWidth:ledHeight*12/7);
+        let initXOffset = (this.width-digitWidth*8)/2;
+        let initYOffset = (this.height-2*ledHeight)/2;
+        let len = (attribs.digitElemFullLen?attribs.digitElemFullLen:ledHeight*8/7);
+        let wid = (attribs.digitElemFullWid?attribs.digitElemFullWid:ledWidth*2);
+        console.log('DigitalClock: ledWidth=',ledWidth,' ledHeight=',ledHeight,'digitWidth=',digitWidth,'initOffs=',initXOffset,',',initYOffset);
+        console.log('DigitalClock: len, wid = ', len, ' ', wid);
         this.digits = [];
-            for (let i=0;i<8;i++) {
-                this.digits.push(new Digit(this.rootSvgElem, 20+i*60, 25, this.onColor, this.offColor, this.timeValue.charAt(i), {
-                wid: 5,
-                len: 35
-            }));
+        for (let i=0;i<8;i++) {
+            this.digits.push(new Digit(this.rootSvgElem, initXOffset+i*digitWidth, initYOffset, 
+                    this.onColor, this.offColor, this.timeValue.charAt(i),
+                    len,
+                    wid
+                )
+            );
         }   
         this.idAnchorElem.append(this.rootSvgElem);
     }
@@ -132,15 +143,13 @@ class LedElem {
 }
 
 class DigitLedSegment {
-    constructor(rootSvg, baseXOffset, baseYOffset, vLevel, hLevel, isHorizontal, onColor, offColor, isOn, attribs) {
+    constructor(rootSvg, baseXOffset, baseYOffset, vLevel, hLevel, isHorizontal, onColor, offColor, isOn, len, wid) {
         this.rootSvg = rootSvg;
         this.baseXOffset = baseXOffset,
         this.baseYOffset = baseYOffset;
         this.vLevel = vLevel;  // 0, 1, or 2 (top, middle, bottom)
         this.hLevel = hLevel;  // 0, 1 (left, right)
         this.isHorizontal = isHorizontal;  // else vertical
-        const len = (attribs.len?attribs.len:40);  // TODO
-        const wid = (attribs.wid?attribs.wid:10);  // TODO
         let svgElem = makeSvgElem(this.rootSvg, "ellipse" /*TODO*/, {
             cx: (this.isHorizontal?this.baseXOffset+len/2:this.baseXOffset+this.hLevel*len),
             cy: (this.isHorizontal?this.baseYOffset+len*this.vLevel:this.baseYOffset+(0.5+this.vLevel)*len),
@@ -160,14 +169,13 @@ class DigitLedSegment {
 }
 
 class Digit {
-    constructor(rootSvg, baseXOffset, baseYOffset, onColor, offColor, value, attribs) {
+    constructor(rootSvg, baseXOffset, baseYOffset, onColor, offColor, value, len, wid) {
         this.rootSvg = rootSvg;
         this.baseXOffset = baseXOffset;
         this.baseYOffset = baseYOffset;
         this.onColor = onColor;
         this.offColor = offColor;
         this.value = value;
-        this.attribs = attribs;  // TODO ?
         this.ledSeg = [];
         let str = "00V10V00H10H20H01V11V";
         for (let i=0;i<21;i+=3) {
@@ -175,7 +183,7 @@ class Digit {
             let hLevel = parseInt(str.charAt(i+1));
             let isHz = (str.charAt(i+2) == 'H');
             this.ledSeg.push(new DigitLedSegment(rootSvg, baseXOffset, baseYOffset,
-                vLevel, hLevel, isHz, onColor, offColor, false, attribs));
+                vLevel, hLevel, isHz, onColor, offColor, false, len, wid));
         }
         this.updateValue(this.value);
     }
@@ -220,7 +228,7 @@ function showTimeOnClock() {
 function showDigitalClock2(clockId, wid, hgt, attribs) {
     console.log('showDigitalClock2 not yet fully implemented');  // TODO
     setUpClock(clockId, wid, hgt, attribs);
-    setInterval(showTimeOnClock, 10);  // TODO - probably should be reduced to about 20 after implementation is close to final
+    setInterval(showTimeOnClock, 3000);  // TODO - probably should be reduced to about 20 after implementation is close to final
 }
 
 export { showDigitalClock2 };

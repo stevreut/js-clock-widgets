@@ -23,7 +23,12 @@ function startClocks() {
         showDigitalClock2("cd2", 500, 120, {
             backgroundColor: "#100040",
             onColor: "#1880ff",
-            offColor: "#180860"
+            offColor: "#180860",
+            // digitWidth: 60,  // TODO
+            // ledHeight: 35,
+            // ledWidth: 12,
+            // digitElemFullLen: 40,
+            // digitElemFullWid: 10
         });
     } catch (error) {
         console.log('error attempting to attached to id=cd2');
