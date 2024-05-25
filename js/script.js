@@ -21,14 +21,17 @@ function startClocks() {
     // Attach 2nd version of digital clock to the element having id="cd2"
     try {
         showDigitalClock2("cd2", 500, 120, {
+            // Note:  All of the following named attributes are optional and, in 
+            // all cases, suitable defaults will be calculated for any attribute
+            // that is not provided.
             backgroundColor: "#100040",
             onColor: "#1880ff",
             offColor: "#180860",
-            // digitWidth: 60,  // TODO
-            // ledHeight: 35,
-            // ledWidth: 12,
-            // digitElemFullLen: 40,
-            // digitElemFullWid: 10
+            digitWidth: 60,
+            ledLength: 35,
+            ledWidth: 5,
+            digitElemFullLength: 40,
+            skewDegrees: 4  // TODO - NOT YET IMPLEMENTED 
         });
     } catch (error) {
         console.log('error attempting to attached to id=cd2');

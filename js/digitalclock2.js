@@ -1,6 +1,23 @@
 import { makeSvgElem, setAtts } from "./svgutils.js";
 
 class DigitalClock {
+
+    // Note:  All of the following named attributes of the "attribs" parameter are 
+    // optional and, in all cases, suitable defaults will be calculated for any attribute
+    // that is not provided.  The list below provides both the attribute names and the
+    // default values inferred in the specific case that ALL attributes are omitted; otherwise,
+    // the calculate of inferred attribute values can be more complex when other values are
+    // explicitly provided:
+    //
+    //    backgroundColor: "#100040",
+    //    onColor: "#1880ff",
+    //    offColor: "#180860",
+    //    digitWidth: 60,
+    //    ledLength: 35,
+    //    ledWidth: 5,
+    //    digitElemFullLength: 40
+    //    skewDegrees: 0   // NOT YET IMPLEMENTED!!
+
     constructor (id, width, height, attribs) {
         this.id = id;
         this.width = width;
@@ -26,32 +43,17 @@ class DigitalClock {
             height: this.height,
             fill: this.backgroundColor
         });
-        // this.testLed = [];
-        // for (let i=0;i<8;i++) {
-        //     this.testLed.push(new LedElem(makeSvgElem(this.rootSvgElem, "circle", {
-        //         cx: 62*i+30,
-        //         cy: 50,
-        //         r: 25
-        //     }),
-        //     this.onColor,
-        //     this.offColor,
-        //     true));
-        // }
-        let ledWidth = (attribs.ledWidth?attribs.ledWidth:5);
-        let ledHeight = (attribs.ledHeight?attribs.ledHeight:35);
-        let digitWidth = (attribs.digitWidth?attribs.digitWidth:ledHeight*12/7);
-        let initXOffset = (this.width-digitWidth*8)/2;
-        let initYOffset = (this.height-2*ledHeight)/2;
-        let len = (attribs.digitElemFullLen?attribs.digitElemFullLen:ledHeight*8/7);
-        let wid = (attribs.digitElemFullWid?attribs.digitElemFullWid:ledWidth*2);
-        console.log('DigitalClock: ledWidth=',ledWidth,' ledHeight=',ledHeight,'digitWidth=',digitWidth,'initOffs=',initXOffset,',',initYOffset);
-        console.log('DigitalClock: len, wid = ', len, ' ', wid);
+        let innerWidth = (attribs.ledWidth?attribs.ledWidth:5);
+        let innerLen = (attribs.ledLength?attribs.ledLength:35);
+        let outerLen = (attribs.digitElemFullLength?attribs.digitElemFullLength:innerLen*8/7);
+        let digitWidth = (attribs.digitWidth?attribs.digitWidth:outerLen*1.5);
+        let initXOffset = (this.width+outerLen/2-digitWidth*8)/2;
+        let initYOffset = (this.height-2*outerLen)/2;
         this.digits = [];
         for (let i=0;i<8;i++) {
             this.digits.push(new Digit(this.rootSvgElem, initXOffset+i*digitWidth, initYOffset, 
                     this.onColor, this.offColor, this.timeValue.charAt(i),
-                    len,
-                    wid,
+                    outerLen, innerLen, innerWidth
                 )
             );
         }   
@@ -100,10 +102,8 @@ class DigitalClock {
                 for (let i=0;i<digCount;i++) {
                     let thisDigitValue = this.timeValue.charAt(i);
                     if (thisDigitValue !== oldTime.charAt(i)) {
-                        // this.testLed[i].flipState();
                         this.digits[i].updateValue(thisDigitValue);
                     }
-                    // this.digits[i].updateValue(thisDigitValue);
                 }
             }
         }
@@ -143,7 +143,7 @@ class LedElem {
 }
 
 class DigitLedSegment {
-    constructor(rootSvg, baseXOffset, baseYOffset, vLevel, hLevel, isHorizontal, onColor, offColor, isOn, len, wid) {
+    constructor(rootSvg, baseXOffset, baseYOffset, vLevel, hLevel, isHorizontal, onColor, offColor, isOn, outerLen, innerLen, innerWidth) {
         this.rootSvg = rootSvg;
         this.baseXOffset = baseXOffset,
         this.baseYOffset = baseYOffset;
@@ -151,13 +151,12 @@ class DigitLedSegment {
         this.hLevel = hLevel;  // 0, 1 (left, right)
         this.isHorizontal = isHorizontal;  // else vertical
         let svgElem = makeSvgElem(this.rootSvg, "ellipse" /*TODO*/, {
-            cx: (this.isHorizontal?this.baseXOffset+len/2:this.baseXOffset+this.hLevel*len),
-            cy: (this.isHorizontal?this.baseYOffset+len*this.vLevel:this.baseYOffset+(0.5+this.vLevel)*len),
-            rx: (this.isHorizontal?len/2*0.8:wid),
-            ry: (this.isHorizontal?wid:len/2*0.8)
+            cx: (this.isHorizontal?this.baseXOffset+outerLen/2:this.baseXOffset+this.hLevel*outerLen),
+            cy: (this.isHorizontal?this.baseYOffset+outerLen*this.vLevel:this.baseYOffset+(0.5+this.vLevel)*outerLen),
+            rx: (this.isHorizontal?innerLen/2:innerWidth),
+            ry: (this.isHorizontal?innerWidth:innerLen/2*0.8)
         });
         this.ledSvg = new LedElem(svgElem,onColor,offColor,isOn);
-        // TODO - what to do with attribs
         // TODO - should this class *extend* the LedElem class?
     }
     turnOn() {
@@ -169,7 +168,7 @@ class DigitLedSegment {
 }
 
 class Digit {
-    constructor(rootSvg, baseXOffset, baseYOffset, onColor, offColor, value, len, wid) {
+    constructor(rootSvg, baseXOffset, baseYOffset, onColor, offColor, value, outerLen, innerLen, innerWidth) {
         this.rootSvg = rootSvg;
         this.baseXOffset = baseXOffset;
         this.baseYOffset = baseYOffset;
@@ -183,18 +182,14 @@ class Digit {
             let hLevel = parseInt(str.charAt(i+1));
             let isHz = (str.charAt(i+2) == 'H');
             this.ledSeg.push(new DigitLedSegment(rootSvg, baseXOffset, baseYOffset,
-                vLevel, hLevel, isHz, onColor, offColor, false, len, wid));
+                vLevel, hLevel, isHz, onColor, offColor, false, outerLen, innerLen, innerWidth));
         }
         this.updateValue(this.value);
     }
     updateValue(value) {
-        // if (value == this.value) {
-        //     return;
-        // }
         if (value !== ' ' && (value < '0' && value > '9')) {
             console.log('not valid value "' + value + '"');
         }
-        // console.log('updating digit with "' + value + '"');
         // TODO - make template static?
         const template = ("0000000;1110111;0000011;0111110;0011111;" +
             "1001011;1011101;1111101;0010011;" +
@@ -228,7 +223,7 @@ function showTimeOnClock() {
 function showDigitalClock2(clockId, wid, hgt, attribs) {
     console.log('showDigitalClock2 not yet fully implemented');  // TODO
     setUpClock(clockId, wid, hgt, attribs);
-    setInterval(showTimeOnClock, 3000);  // TODO - probably should be reduced to about 20 after implementation is close to final
+    setInterval(showTimeOnClock, 20);  // TODO - probably should be reduced to about 20 after implementation is close to final
 }
 
 export { showDigitalClock2 };
