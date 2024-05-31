@@ -43,6 +43,9 @@ class DigitalClock {
             height: this.height,
             fill: this.backgroundColor
         });
+        this.groupSvgElem = makeSvgElem(this.rootSvgElem, "g", {
+            transform: "skewX(-8.5) translate(12,0)"  // TODO - place-holder hard-coding until parameter passing is coded later
+        })
         let innerWidth = (attribs.ledWidth?attribs.ledWidth:5);
         let innerLen = (attribs.ledLength?attribs.ledLength:35);
         let outerLen = (attribs.digitElemFullLength?attribs.digitElemFullLength:innerLen*8/7);
@@ -51,7 +54,7 @@ class DigitalClock {
         let initYOffset = (this.height-2*outerLen)/2;
         this.digits = [];
         for (let i=0;i<8;i++) {
-            this.digits.push(new Digit(this.rootSvgElem, initXOffset+i*digitWidth, initYOffset, 
+            this.digits.push(new Digit(this.groupSvgElem, initXOffset+i*digitWidth, initYOffset, 
                     this.onColor, this.offColor, this.timeValue.charAt(i),
                     outerLen, innerLen, innerWidth
                 )
