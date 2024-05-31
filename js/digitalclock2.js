@@ -154,7 +154,7 @@ class DigitLedSegment {
             cx: (this.isHorizontal?this.baseXOffset+outerLen/2:this.baseXOffset+this.hLevel*outerLen),
             cy: (this.isHorizontal?this.baseYOffset+outerLen*this.vLevel:this.baseYOffset+(0.5+this.vLevel)*outerLen),
             rx: (this.isHorizontal?innerLen/2:innerWidth),
-            ry: (this.isHorizontal?innerWidth:innerLen/2*0.8)
+            ry: (this.isHorizontal?innerWidth:innerLen/2)
         });
         this.ledSvg = new LedElem(svgElem,onColor,offColor,isOn);
         // TODO - should this class *extend* the LedElem class?

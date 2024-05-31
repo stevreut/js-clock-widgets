@@ -28,9 +28,9 @@ function startClocks() {
             onColor: "#1880ff",
             offColor: "#180860",
             digitWidth: 60,
-            ledLength: 35,
+            ledLength: 30,
             ledWidth: 5,
-            digitElemFullLength: 40,
+            digitElemFullLength: 35,
             skewDegrees: 4  // TODO - NOT YET IMPLEMENTED 
         });
     } catch (error) {
