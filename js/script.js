@@ -31,7 +31,7 @@ function startClocks() {
             ledLength: 30,
             ledWidth: 5,
             digitElemFullLength: 35,
-            skewDegrees: 4  // TODO - NOT YET IMPLEMENTED 
+            skewDegrees: 8.5
         });
     } catch (error) {
         console.log('error attempting to attached to id=cd2');

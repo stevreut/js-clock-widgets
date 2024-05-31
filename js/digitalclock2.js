@@ -15,8 +15,8 @@ class DigitalClock {
     //    digitWidth: 60,
     //    ledLength: 35,
     //    ledWidth: 5,
-    //    digitElemFullLength: 40
-    //    skewDegrees: 0   // NOT YET IMPLEMENTED!!
+    //    digitElemFullLength: 40,
+    //    skewDegrees: 0
 
     constructor (id, width, height, attribs) {
         this.id = id;
@@ -43,15 +43,18 @@ class DigitalClock {
             height: this.height,
             fill: this.backgroundColor
         });
-        this.groupSvgElem = makeSvgElem(this.rootSvgElem, "g", {
-            transform: "skewX(-8.5) translate(12,0)"  // TODO - place-holder hard-coding until parameter passing is coded later
-        })
         let innerWidth = (attribs.ledWidth?attribs.ledWidth:5);
         let innerLen = (attribs.ledLength?attribs.ledLength:35);
         let outerLen = (attribs.digitElemFullLength?attribs.digitElemFullLength:innerLen*8/7);
         let digitWidth = (attribs.digitWidth?attribs.digitWidth:outerLen*1.5);
         let initXOffset = (this.width+outerLen/2-digitWidth*8)/2;
         let initYOffset = (this.height-2*outerLen)/2;
+        this.skewDegrees = (attribs.skewDegrees?attribs.skewDegrees:0);
+        const groupAttribs = (this.skewDegrees === 0?{}:{
+            transform: "skewX(" + (-this.skewDegrees) + ") translate(" 
+                + Math.round(Math.tan(Math.PI/180*this.skewDegrees)*this.height/2*1000)/1000 + ",0)"
+        });
+        this.groupSvgElem = makeSvgElem(this.rootSvgElem, "g",groupAttribs);
         this.digits = [];
         for (let i=0;i<8;i++) {
             this.digits.push(new Digit(this.groupSvgElem, initXOffset+i*digitWidth, initYOffset, 
