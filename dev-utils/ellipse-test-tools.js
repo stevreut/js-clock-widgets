@@ -5,13 +5,22 @@ const FRAMEH = 800;
 const RECTCOLR = "#00a";
 const RECTWID = 2.5;
 const RECTSTYL = "round";
-const LINECOLR = "#aac";
+const LINECOLR = "rgba(200,200,200,0.4)";
 const CORE_CIRC_COLR = "rgba(128,200,128,0.4)";
+const ELL_COLR = "rgba(255,200,128,0.4)";
 
 let offset = 100;
 let ledLen = 300;
 
-let coreBigRadius = ledLen*Math.sqrt(0.5);
+let majorFraction = 0.3;
+let minorFraction = 0.15;
+
+//-------------
+
+let a = ledLen*majorFraction;
+let b = ledLen*minorFraction;
+
+const coreBigRadius = ledLen*Math.sqrt(0.5);
 
 window.addEventListener("load",()=>{
     console.log("ellipse window loaded at " + (new Date()));
@@ -30,6 +39,7 @@ function makeSvgImage() {
             x: 0, y: 0, width: FRAMEW, height: FRAMEH,
             fill: RECTCOLR
         });
+        let ellipseCenterX = offset+ledLen/2;
         for (let i=0;i<3;i++) {
             const y = offset+i*ledLen;
             makeSvgElem(svgRoot, "line", {
@@ -40,6 +50,13 @@ function makeSvgImage() {
                 stroke: LINECOLR,
                 stroke$width: RECTWID,
                 stroke$linecap: RECTSTYL
+            });
+            makeSvgElem(svgRoot, "ellipse", {
+                cx: ellipseCenterX,
+                cy: y,
+                rx: a,
+                ry: b,
+                fill: ELL_COLR
             });
         }
         for (let i=0;i<2;i++) {
@@ -54,7 +71,14 @@ function makeSvgImage() {
                     stroke: LINECOLR,
                     stroke$width: RECTWID,
                     stroke$linecap: RECTSTYL
-                })
+                });
+                makeSvgElem(svgRoot, "ellipse", {
+                    cx: x,
+                    cy: yInit+ledLen/2,
+                    rx: b,
+                    ry: a,
+                    fill: ELL_COLR
+                });
             }
         }
         let centerX = offset+ledLen/2;
@@ -64,6 +88,14 @@ function makeSvgImage() {
                 cy: offset+(0.5+i)*ledLen,
                 r: coreBigRadius,
                 fill: CORE_CIRC_COLR
+            })
+            makeSvgElem(svgRoot, "circle", {
+                cx: centerX,
+                cy: offset+(0.5+i)*ledLen,
+                r: ledLen/2,
+                fill: "transparent",
+                stroke: "rgba(255,0,255,0.2)",
+                stroke$width: 2*b
             })
         }
         anch.appendChild(svgRoot);
