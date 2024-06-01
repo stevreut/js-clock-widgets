@@ -216,6 +216,41 @@ class Digit {
     }
 }
 
+class Colon {
+    constructor(rootSvg, baseXOffset, baseYOffset, onColor, offColor, outerLen, innerWidth) {
+        this.rootSvg = rootSvg;
+        this.baseXOffset = baseXOffset;
+        this.baseYOffset = baseYOffset;
+        this.onColor = onColor;
+        this.offColor = offColor;
+        this.outerLen = outerLen;
+        this.ledDots = [];
+        this.radius = innerWidth/2;
+        for (let i=0;i<2;i++) {
+            this.ledDots.push(new LedDot(rootSvg, baseXOffset+outerLen/2, baseYOffset+(i+0.5)*outerLen, this.radius, this.onColor, this.offColor, true));
+        }
+    }
+}
+
+class LedDot {
+    constructor(rootSvg, ctrX, ctrY, radius, onColor, offColor, isOn) {
+        this.rootSvg = rootSvg;
+        this.cx = ctrX;
+        this.cy = ctrY;
+        this.radius = radius;
+        this.onColor = onColor;
+        this.offColor = offColor;
+        this.isOn = isOn;
+        this.color = (this.isOn?this.onColor:this.offColor);
+        let dotElem = makeSvgElem(rootSvg, "circle", {
+            cx: this.cx,
+            cy: this.cy,
+            r: this.radius
+        })
+        this.ledElem = new LedElem(dotElem, this.onColor, this.offColor, this.isOn);
+    }
+}
+
 let theClock = null;  // TODO
 
 function setUpClock(clockId, width, height, attributes) {
