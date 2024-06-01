@@ -1,0 +1,22 @@
+Considerations for matching the outside curvature of "L.E.D." elements
+to the smallest circle that encloses them
+
+Radius of curvature of ellipse at outside: a*a/b 
+
+Radius of curvature of enclosing circle: L/2+b, where L = "ledLen"
+
+a*a/b = L/2+b
+2*a*a = L*b+2*b^2
+a = sqrt*((L*b+2*b^2)/2)
+
+a and b in main program are calculated from fractional parts of
+ledLen (minorFraction and majorFraction), so, rephrasing the
+above we get:
+
+a = Mf*L, b = mf*L (note case)
+
+-> Mf*L = sqrt((L*mf*L+2*(mf*L)^2)/2)
+-> Mf = sqrt((L*mf*L+2*(mf*L)^2)/2)/L 
+  = sqrt((mf+2*mf^2)/2)
+  = sqrt(mf*(1+2*mf)/2)
+

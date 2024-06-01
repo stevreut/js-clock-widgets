@@ -12,13 +12,23 @@ const ELL_COLR = "rgba(255,200,128,0.4)";
 let offset = 100;
 let ledLen = 300;
 
-let majorFraction = 0.3;
-let minorFraction = 0.15;
+let minorFraction = 0.18; 
 
 //-------------
 
+// See ellipse-math-notes.txt
+
+// Recalculating majorFraction from minorFraction:
+
+//   = sqrt(mf*(1+2*mf)/2) (from .txt calculations)
+
+let majorFraction = Math.sqrt(minorFraction*(1+2*minorFraction)/2);
+console.log('minor/major = ', minorFraction, ", ", majorFraction);
+
 let a = ledLen*majorFraction;
 let b = ledLen*minorFraction;
+
+console.log('a, b = ', a, ', ', b);
 
 const coreBigRadius = ledLen*Math.sqrt(0.5);
 
