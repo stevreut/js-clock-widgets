@@ -20,7 +20,7 @@ function startClocks() {
     showDigitalClock("cd");
     // Attach 2nd version of digital clock to the element having id="cd2"
     try {
-        showDigitalClock2("cd2", 500, 120, {
+        showDigitalClock2("cd2", 690, 120, {
             // Note:  All of the following named attributes are optional and, in 
             // all cases, suitable defaults will be calculated for any attribute
             // that is not provided.
