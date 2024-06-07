@@ -47,7 +47,8 @@ class DigitalClock {
         let innerLen = (attribs.ledLength?attribs.ledLength:35);
         let outerLen = (attribs.digitElemFullLength?attribs.digitElemFullLength:innerLen*8/7);
         let digitWidth = (attribs.digitWidth?attribs.digitWidth:outerLen*1.5);
-        let initXOffset = (this.width+outerLen/2-digitWidth*11)/2;
+        let colonWidth = digitWidth/2;  // TODO
+        let initXOffset = (this.width+outerLen/2-digitWidth*8-colonWidth*3)/2;
         let initYOffset = (this.height-2*outerLen)/2;
         this.skewDegrees = (attribs.skewDegrees?attribs.skewDegrees:0);
         const groupAttribs = (this.skewDegrees === 0?{}:{
@@ -58,13 +59,14 @@ class DigitalClock {
         this.digits = [];
         this.colons = [];
         for (let i=0;i<8;i++) {
-            let xOffset = initXOffset+digitWidth*Math.floor(i*3/2);  // TODO - use narrower width for colons than for digits
+            // let xOffset = initXOffset+digitWidth*Math.floor(i*3/2);  // TODO - use narrower width for colons than for digits
+            let xOffset = initXOffset+digitWidth*i+colonWidth*Math.floor(i/2);
             this.digits.push(new Digit(this.groupSvgElem, xOffset, initYOffset, 
                     this.onColor, this.offColor, this.timeValue.charAt(i),
                     outerLen, innerLen, innerWidth));
-            if (i%2 === 1) {
+            if (i%2 === 1 && i<7) {
                 this.colons.push(new Colon(this.groupSvgElem, xOffset+digitWidth, initYOffset, 
-                    this.onColor, this.offColor, outerLen /* TODO */, innerWidth, (i===5?1:0)));
+                    this.onColor, this.offColor, outerLen /* TODO use colonWidth too */, innerWidth, (i===5?1:0)));
             }
         }   
         this.idAnchorElem.append(this.rootSvgElem);
@@ -223,19 +225,19 @@ class Digit {
 class Colon {
     // TODO - Should this class extend LedElem (even though it will encompass TWO distinct
     // SVG components?
-    constructor(rootSvg, baseXOffset, baseYOffset, onColor, offColor, outerLen, innerWidth, mode) {
+    constructor(rootSvg, baseXOffset, baseYOffset, onColor, offColor, charLen, innerWidth, mode) {
         this.rootSvg = rootSvg;
         this.baseXOffset = baseXOffset;
         this.baseYOffset = baseYOffset;
         this.onColor = onColor;
         this.offColor = offColor;
-        this.outerLen = outerLen;
+        this.charLen = charLen;  // TODO
         this.ledDots = [];
         this.radius = innerWidth;
         this.mode = mode;  // TODO - 0 : is colon, 1 : is decimal (i.e. upper dot turned off)
         console.log('mode = ', this.mode);  // TODO
         for (let i=0;i<2;i++) {
-            this.ledDots.push(new LedDot(rootSvg, baseXOffset+outerLen/2, baseYOffset+(i+0.5)*outerLen, this.radius, this.onColor, this.offColor, true));
+            this.ledDots.push(new LedDot(rootSvg, baseXOffset+charLen/4 /*TODO*/, baseYOffset+(i+(this.mode===1?0.85:0.5))*charLen, this.radius, this.onColor, this.offColor, true));
         }
         if (this.mode === 1) {
             this.ledDots[0].turnOff();  // TODO
