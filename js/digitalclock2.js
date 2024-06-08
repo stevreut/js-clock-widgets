@@ -212,30 +212,42 @@ class Digit {
             for (let i=0;i<strLen;i++) innerArr.push((val.charAt(i)==="1"));
             this.onOffArray.push(innerArr);
         });
-        console.log('onOff after init:');
-        this.onOffArray.forEach((val,idx)=>console.log('  [',idx,'] -> [',val,']')
-        );
     }
     static {
         console.log('Digit static method called at ' + (new Date()));
         this.initOnOffArray();
+        console.log('onOff after init:');
+        this.onOffArray.forEach((val,idx)=>console.log('  [',idx,'] -> [',val,']'));
     }
     updateValue(value) {
         if (value !== ' ' && (value < '0' && value > '9')) {
             console.log('not valid value "' + value + '"');
         }
-        // TODO - make template static?
-        const template = ("0000000;1110111;0000011;0111110;0011111;" +
-            "1001011;1011101;1111101;0010011;" +
-            "1111111;1011111").split(";");
-        let subTemplate = '';
-        if (value === ' ') {
-            subTemplate = template[0];
-        } else {
-            subTemplate = template[parseInt(value)+1];
-        }
+        // // TODO - make template static?
+        // const template = ("0000000;1110111;0000011;0111110;0011111;" +
+        //     "1001011;1011101;1111101;0010011;" +
+        //     "1111111;1011111").split(";");
+        // let subTemplate = '';
+        // if (value === ' ') {
+        //     subTemplate = template[0];
+        // } else {
+        //     subTemplate = template[parseInt(value)+1];
+        // }
+        // for (let i=0;i<7;i++) {
+        //     if (subTemplate.charAt(i) === '1') {
+        //         this.ledSeg[i].turnOn();
+        //     } else {
+        //         this.ledSeg[i].turnOff();
+        //     }
+        // }
+        // console.log('onOff after update call:');
+        // Digit.onOffArray.forEach((val,idx)=>console.log('  [',idx,'] -> [',val,']'));
+        const onOffIdx = (value===' '?0:parseInt(value)+1);
+        console.log('onOffIdx=',onOffIdx);
+        const thisValTemplate = Digit.onOffArray[onOffIdx];
+        console.log('thisVaal = ', thisValTemplate);
         for (let i=0;i<7;i++) {
-            if (subTemplate.charAt(i) === '1') {
+            if (thisValTemplate[i]) {
                 this.ledSeg[i].turnOn();
             } else {
                 this.ledSeg[i].turnOff();
