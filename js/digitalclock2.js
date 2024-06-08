@@ -200,52 +200,37 @@ class Digit {
     }
     static onOffArray = [];
     static initOnOffArray() {
-        console.log('initOnOffArray called at ' + (new Date()));
-        const template = ("0000000;1110111;0000011;0111110;0011111;" +
-        "1001011;1011101;1111101;0010011;" +
-        "1111111;1011111").split(";");
-        console.log('tmpl = ', template);
-        template.forEach((val,idx)=>{
+        // Initiate Digit.onOffArray only once for class rather
+        // than once for each instance of Digit.
+        const templates = (
+        // First ([0]) element of templates represents
+        // the configuration for a space character.  Thereafter,
+        // [1] is for character "0", [2] for character "1",
+        // etc. up through [10] for "9".  Within each
+        // element of template, the "0" or "1" values will be
+        // converted to boolean in the onOffArray static variable which
+        // is a two-dimension array representing the "on" or
+        // "off" status of each LED element ([0] thru [6]) of each
+        // of the 11 distinct possible characters.
+        "0000000;1110111;0000011;0111110;" +
+        "0011111;1001011;1011101;1111101;" +
+        "0010011;1111111;1011111").split(";");
+        templates.forEach((val,idx)=>{
             let innerArr = [];
-            console.log('val="' + val + '"');
             const strLen = val.length;
             for (let i=0;i<strLen;i++) innerArr.push((val.charAt(i)==="1"));
-            this.onOffArray.push(innerArr);
+            Digit.onOffArray.push(innerArr);
         });
     }
     static {
-        console.log('Digit static method called at ' + (new Date()));
         this.initOnOffArray();
-        console.log('onOff after init:');
-        this.onOffArray.forEach((val,idx)=>console.log('  [',idx,'] -> [',val,']'));
     }
     updateValue(value) {
         if (value !== ' ' && (value < '0' && value > '9')) {
             console.log('not valid value "' + value + '"');
         }
-        // // TODO - make template static?
-        // const template = ("0000000;1110111;0000011;0111110;0011111;" +
-        //     "1001011;1011101;1111101;0010011;" +
-        //     "1111111;1011111").split(";");
-        // let subTemplate = '';
-        // if (value === ' ') {
-        //     subTemplate = template[0];
-        // } else {
-        //     subTemplate = template[parseInt(value)+1];
-        // }
-        // for (let i=0;i<7;i++) {
-        //     if (subTemplate.charAt(i) === '1') {
-        //         this.ledSeg[i].turnOn();
-        //     } else {
-        //         this.ledSeg[i].turnOff();
-        //     }
-        // }
-        // console.log('onOff after update call:');
-        // Digit.onOffArray.forEach((val,idx)=>console.log('  [',idx,'] -> [',val,']'));
         const onOffIdx = (value===' '?0:parseInt(value)+1);
-        console.log('onOffIdx=',onOffIdx);
         const thisValTemplate = Digit.onOffArray[onOffIdx];
-        console.log('thisVaal = ', thisValTemplate);
         for (let i=0;i<7;i++) {
             if (thisValTemplate[i]) {
                 this.ledSeg[i].turnOn();
@@ -269,7 +254,6 @@ class Colon {
         this.ledDots = [];
         this.radius = innerWidth;
         this.mode = mode;  // TODO - 0 : is colon, 1 : is decimal (i.e. upper dot turned off)
-        console.log('mode = ', this.mode);  // TODO
         for (let i=0;i<2;i++) {
             this.ledDots.push(new LedDot(rootSvg, baseXOffset+charLen/4 /*TODO*/, baseYOffset+(i+(this.mode===1?0.85:0.5))*charLen, this.radius, this.onColor, this.offColor, true));
         }
