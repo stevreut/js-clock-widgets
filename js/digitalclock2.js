@@ -198,6 +198,28 @@ class Digit {
         }
         this.updateValue(this.value);
     }
+    static onOffArray = [];
+    static initOnOffArray() {
+        console.log('initOnOffArray called at ' + (new Date()));
+        const template = ("0000000;1110111;0000011;0111110;0011111;" +
+        "1001011;1011101;1111101;0010011;" +
+        "1111111;1011111").split(";");
+        console.log('tmpl = ', template);
+        template.forEach((val,idx)=>{
+            let innerArr = [];
+            console.log('val="' + val + '"');
+            const strLen = val.length;
+            for (let i=0;i<strLen;i++) innerArr.push((val.charAt(i)==="1"));
+            this.onOffArray.push(innerArr);
+        });
+        console.log('onOff after init:');
+        this.onOffArray.forEach((val,idx)=>console.log('  [',idx,'] -> [',val,']')
+        );
+    }
+    static {
+        console.log('Digit static method called at ' + (new Date()));
+        this.initOnOffArray();
+    }
     updateValue(value) {
         if (value !== ' ' && (value < '0' && value > '9')) {
             console.log('not valid value "' + value + '"');
