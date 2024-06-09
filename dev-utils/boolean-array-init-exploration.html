@@ -18,7 +18,14 @@
         p {
             font-family: 'Courier New', Courier, monospace;
             font-size: 24pt;
+            padding: 10px;
+            background-color: #95b5f0;
+            display: inline-block;
+            margin-left: 0px;
         }
+        /* div {
+            margin-left: 0px;
+        } */
     </style>
 </head>
 <body>
@@ -33,12 +40,19 @@
             console.log('final = "' + obj.finalHex() + '"');
             let anch = document.getElementById("anchdiv");
             if (anch) {
+                console.log('anchor length = ', anch.children.length);
+                if (anch.children.length > 0) {
+                    anch.children[0].remove();
+                }
+                console.log('inner pre removal = ', anch.innerHTML);
+                anch.innerHTML = null;
                 let pElem = document.createElement("p");
                 pElem.textContent = obj.finalHex();
                 anch.appendChild(pElem);
             }
         }
         class TestClass {
+            static expectedHex = "01dc1be3f2eefd27fef8";
             static onOffArray = [];
             static finalHexStr = "";
             static hexOfArr(arr) {
@@ -72,6 +86,11 @@
                 "0010011;1111111;1011111").split(";");
                 const hexStr = TestClass.hexOfArr(binStrTemplates);
                 this.finalHexStr = hexStr;
+                if (this.finalHexStr === this.expectedHex) {
+                    console.log('match confirmed');
+                } else {
+                    console.log('unexpected result');
+                }
                 binStrTemplates.forEach((val,idx)=>{
                     let innerArr = [];
                     const strLen = val.length;
