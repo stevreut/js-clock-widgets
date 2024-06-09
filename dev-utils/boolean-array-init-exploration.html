@@ -37,7 +37,8 @@
         function initPage() {
             console.log('initPage() invoked at '+(new Date()).toISOString());
             let obj = new TestClass();
-            console.log('final = "' + obj.finalHex() + '"');
+            const finHex = obj.finalHex();
+            console.log('final = "' + finHex + '"');
             let anch = document.getElementById("anchdiv");
             if (anch) {
                 console.log('anchor length = ', anch.children.length);
@@ -47,9 +48,23 @@
                 console.log('inner pre removal = ', anch.innerHTML);
                 anch.innerHTML = null;
                 let pElem = document.createElement("p");
-                pElem.textContent = obj.finalHex();
+                pElem.textContent = finHex;
                 anch.appendChild(pElem);
+                const unpkArr = unpackHex(finHex);
+                console.log('unpkArr = ', unpkArr);
+                // TODO - append to page
             }
+        }
+        function unpackHex(hx) {
+            if (typeof hx !== 'string') {
+                throw "invalid hx parameter - not string";
+            }
+            let boolArr = [];
+            let len = hx.length;
+            for (let i=0;i<len;i++) {
+                let valStr = parseInt(hx.charAt[i],16).toPaddedString(2,4);
+            }
+            
         }
         class TestClass {
             static expectedHex = "01dc1be3f2eefd27fef8";
