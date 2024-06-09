@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Array JS Exploration</title>
+    <style>
+        * {
+            background-color: #6495ed;
+            color: #00008b;
+            margin-left: 15px;
+            margin-right: 10px;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+        h1, h2, h3 {
+            text-shadow: 3px 5px 8px rgba(0,0,139,0.4);
+        }
+        p {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 24pt;
+        }
+    </style>
+</head>
+<body>
+    <h1>Array Initialization Proof-of-Concept</h1>
+    <h2>One-page Test Environment</h2>
+    <div id="anchdiv">anchdiv</div>
+    <script>
+        window.addEventListener("load",initPage);
+        function initPage() {
+            console.log('initPage() invoked at '+(new Date()).toISOString());
+            let obj = new TestClass();
+            console.log('final = "' + obj.finalHex() + '"');
+            let anch = document.getElementById("anchdiv");
+            if (anch) {
+                let pElem = document.createElement("p");
+                pElem.textContent = obj.finalHex();
+                anch.appendChild(pElem);
+            }
+        }
+        class TestClass {
+            static onOffArray = [];
+            static finalHexStr = "";
+            static hexOfArr(arr) {
+                let str = "";
+                arr.forEach((val)=>str+=val);
+                while (str.length%4!==0) {
+                    str+="0";
+                }
+                let str2 = "";
+                for (let i=0;i<str.length;i+=4) {
+                    let strExc = str.substring(i,i+4);
+                    let hx = parseInt(strExc,2);
+                    let hxStr = hx.toString(16);
+                    if (typeof hxStr !== 'string') {
+                        return "invalid nonstring" + hxStr;
+                    } else {
+                        if (hxStr.length !== 1) {
+                            return "problem";
+                        } else {
+                            str2 += hxStr;
+                        }
+                    }
+                }
+                return str2;
+            }
+            static initOnOffArray() {
+                console.log('initOnOffArray() [static] invoked at ' + (new Date()).toISOString());
+                const binStrTemplates = (
+                "0000000;1110111;0000011;0111110;" +
+                "0011111;1001011;1011101;1111101;" +
+                "0010011;1111111;1011111").split(";");
+                const hexStr = TestClass.hexOfArr(binStrTemplates);
+                this.finalHexStr = hexStr;
+                binStrTemplates.forEach((val,idx)=>{
+                    let innerArr = [];
+                    const strLen = val.length;
+                    for (let i=0;i<strLen;i++) innerArr.push((val.charAt(i)==="1"));
+                    TestClass.onOffArray.push(innerArr);
+                });
+            }
+            static {
+                this.initOnOffArray();
+            }
+            finalHex() {
+                return TestClass.finalHexStr;
+            }
+        }
+    </script>
+</body>
+</html>
